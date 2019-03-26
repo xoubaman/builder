@@ -30,9 +30,9 @@ class BuilderTest extends TestCase
 
     public function testSetPropertiesAreUsedForNewInstance(): void
     {
-        $instance = $this->builder->setName('Luke')
-                                  ->setAddress('Tatooine Farm')
-                                  ->setShip('X-Wing')
+        $instance = $this->builder->withName('Luke')
+                                  ->withAddress('Tatooine Farm')
+                                  ->withShip('X-Wing')
                                   ->build();
 
         $expected = new Rebel(
@@ -46,9 +46,9 @@ class BuilderTest extends TestCase
 
     public function testAfterABuiltPropertiesAreResetToDefaults(): void
     {
-        $this->builder->setName('Luke')
-                      ->setAddress('Tatooine Farm')
-                      ->setShip('X-Wing')
+        $this->builder->withName('Luke')
+                      ->withAddress('Tatooine Farm')
+                      ->withShip('X-Wing')
                       ->build();
 
         $instance = $this->builder->build();
@@ -64,9 +64,9 @@ class BuilderTest extends TestCase
 
     public function testLastBuiltInstanceCanBeCloned(): void
     {
-        $this->builder->setName('Luke')
-                      ->setAddress('Tatooine Farm')
-                      ->setShip('X-Wing')
+        $this->builder->withName('Luke')
+                      ->withAddress('Tatooine Farm')
+                      ->withShip('X-Wing')
                       ->build();
 
         $instance = $this->builder->cloneLast();
@@ -82,14 +82,14 @@ class BuilderTest extends TestCase
 
     public function testCloningLastBuiltWhileSettingNewValuesDoNotAffectCurrentBuild(): void
     {
-        $this->builder->setName('Luke')
-                      ->setAddress('Tatooine Farm')
-                      ->setShip('X-Wing')
+        $this->builder->withName('Luke')
+                      ->withAddress('Tatooine Farm')
+                      ->withShip('X-Wing')
                       ->build();
 
-        $this->builder->setName('Leia')
-                      ->setAddress('Endor Moon')
-                      ->setShip('Bike');
+        $this->builder->withName('Leia')
+                      ->withAddress('Endor Moon')
+                      ->withShip('Bike');
 
         $this->builder->cloneLast();
 

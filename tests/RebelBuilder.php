@@ -55,21 +55,21 @@ class RebelBuilder
         $this->current[$field] = $value;
     }
 
-    public function setName(string $name): self
+    public function withName(string $name): self
     {
         $this->addToCurrent('name', $name);
 
         return $this;
     }
 
-    public function setAddress(string $address): self
+    public function withAddress(string $address): self
     {
         $this->addToCurrent('address', $address);
 
         return $this;
     }
 
-    public function setShip(string $ship): self
+    public function withShip(string $ship): self
     {
         $this->addToCurrent('ship', $ship);
 
