@@ -3,56 +3,30 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
 
-class RebelBuilder
+use Xoubaman\Builder\Builder;
+
+final class RebelBuilder extends Builder
 {
     const DEFAULT_NAME    = 'Han Solo';
     const DEFAULT_ADDRESS = 'Tatooine';
     const DEFAULT_SHIP    = 'Millennium Falcon';
 
-    /** @var array */
-    private $base = [
+    protected const CLASS_TO_BUILD = Rebel::class;
+
+    protected $base = [
         'name'    => self::DEFAULT_NAME,
         'address' => self::DEFAULT_ADDRESS,
         'ship'    => self::DEFAULT_SHIP,
     ];
-    /** @var array */
-    private $current = [];
-    /** @var array */
-    private $lastBuilt = [];
 
     public function build(): Rebel
     {
-        $this->current = $this->current + $this->base;
-
-        $instance = $this->buildWith($this->current);
-
-        $this->lastBuilt = $this->current;
-        $this->current   = [];
-
-        return $instance;
-    }
-
-    private function buildWith(array $data): Rebel
-    {
-        return new Rebel(
-            $data['name'],
-            $data['address'],
-            $data['ship']
-        );
+        return parent::build();
     }
 
     public function cloneLast(): Rebel
     {
-        return $this->buildWith($this->lastBuilt);
-    }
-
-    private function addToCurrent(string $field, $value): void
-    {
-        if (empty($this->current)) {
-            $this->current = $this->base;
-        }
-
-        $this->current[$field] = $value;
+        return parent::cloneLast();
     }
 
     public function withName(string $name): self

@@ -3,6 +3,8 @@
 namespace Xoubaman\Builder\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Xoubaman\Builder\Builder;
+use Xoubaman\Builder\ClassToBuildNotDefined;
 
 class BuilderTest extends TestCase
 {
@@ -102,5 +104,14 @@ class BuilderTest extends TestCase
         );
 
         self::assertEquals($instance, $expected);
+    }
+
+    public function testExceptionThrownIfNoClassToBuildDefined(): void
+    {
+        $builder = new class extends Builder
+        {
+        };
+        $this->expectException(ClassToBuildNotDefined::class);
+        $builder->build();
     }
 }
