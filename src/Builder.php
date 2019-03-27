@@ -17,16 +17,6 @@ abstract class Builder
 
     public function build()
     {
-        return $this->doBuild();
-    }
-
-    public function cloneLast()
-    {
-        return $this->doCloneLast();
-    }
-
-    private function doBuild()
-    {
         $this->current = $this->current + $this->base;
 
         $instance = $this->newInstanceWithParameters($this->current);
@@ -37,7 +27,7 @@ abstract class Builder
         return $instance;
     }
 
-    private function doCloneLast()
+    public function cloneLast()
     {
         return $this->newInstanceWithParameters($this->lastBuilt);
     }
