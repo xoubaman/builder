@@ -5,6 +5,8 @@ namespace Xoubaman\Builder\Tests;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Builder;
 use Xoubaman\Builder\ClassToBuildNotDefined;
+use Xoubaman\Builder\Tests\Examples\Builder\Rebel;
+use Xoubaman\Builder\Tests\Examples\Builder\RebelBuilder;
 
 class BuilderTest extends TestCase
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Xoubaman\Builder\Tests;
+namespace Xoubaman\Builder\Tests\Examples\Builder;
 
 class Rebel
 {
