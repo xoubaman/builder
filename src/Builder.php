@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder;
 
-use Xoubaman\Builder\Tests\Rebel;
-
 abstract class Builder
 {
     protected const CLASS_TO_BUILD = '';
@@ -34,7 +32,7 @@ abstract class Builder
 
     private function newInstanceWithParameters(
         array $data
-    ): Rebel {
+    ) {
         $class = static::CLASS_TO_BUILD;
 
         if (empty($class)) {
