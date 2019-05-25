@@ -13,6 +13,29 @@ final class BuilderGenerator
         $className  = $reflection->getShortName();
         $namespace  = $reflection->getNamespaceName();
 
-        return ClassBlock::generateClass($namespace, $className);
+        $constructorArguments = $this->getConstructorArguments($reflection);
+
+        return ClassBlock::generateClass(
+            $namespace,
+            $className,
+            $constructorArguments
+        );
+    }
+
+    private function getConstructorArguments(ReflectionClass $reflection): array
+    {
+        $properties = $reflection->getConstructor()->getParameters();
+
+        $parsed = [];
+        foreach ($properties as $property) {
+            $type = $property->getType() ? $property->getType()->__toString() : 'null';
+
+            $parsed[] = new Argument(
+                $property->getName(),
+                $type
+            );
+        }
+
+        return $parsed;
     }
 }

@@ -11,6 +11,10 @@ final class PocoClassBuilder extends Builder
 
     public function __construct()
     {
+        $this->base = [
+            'propertyOne' => 'some string',
+            'propertyTwo' => true,
+        ];
     }
 
     public function build(): PocoClass
@@ -21,5 +25,19 @@ final class PocoClassBuilder extends Builder
     public function cloneLast(): PocoClass
     {
         return parent::cloneLast();
+    }
+
+    public function withPropertyOne(string $propertyOne): self
+    {
+        $this->addToCurrent('property_one', $propertyOne);
+
+        return $this;
+    }
+
+    public function withPropertyTwo(bool $propertyTwo): self
+    {
+        $this->addToCurrent('property_two', $propertyTwo);
+
+        return $this;
     }
 }

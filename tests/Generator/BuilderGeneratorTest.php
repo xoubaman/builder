@@ -8,7 +8,7 @@ use Xoubaman\Builder\Tests\Examples\Generator\PocoClass;
 
 class BuilderGeneratorTest extends TestCase
 {
-    public function testANewBuilderIsCreatedForAPocoClass(): void
+    public function testBuilderIsGeneratedClassWithScalarArguments(): void
     {
         $builderGenerator = new BuilderGenerator();
         $builderAsString  = $builderGenerator->forClass(PocoClass::class);

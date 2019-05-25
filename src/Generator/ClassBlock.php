@@ -5,9 +5,13 @@ namespace Xoubaman\Builder\Generator;
 
 final class ClassBlock
 {
+    use TemplateReplacement;
+
+    private const BUILDER_NAMESPACE_PLACEHOLDER = '[BUILDER_NAMESPACE]';
     private const NAMESPACE_PLACEHOLDER         = '[NAMESPACE]';
     private const CLASSNAME_PLACEHOLDER         = '[CLASSNAME]';
-    private const BUILDER_NAMESPACE_PLACEHOLDER = '[BUILDER_NAMESPACE]';
+    private const BASE_VALUES_PLACEHOLDER       = '[BASE_VALUES]';
+    private const PROPERTY_SETTERS_PLACEHOLDER  = '[PROPERTY_SETTERS]';
 
     private const BUILDER_NAMESPACE = 'Xoubaman\Builder\Builder';
 
@@ -25,6 +29,7 @@ final class [CLASSNAME]Builder extends Builder
 
     public function __construct()
     {
+        [BASE_VALUES]
     }
 
     public function build(): [CLASSNAME]
@@ -36,26 +41,28 @@ final class [CLASSNAME]Builder extends Builder
     {
         return parent::cloneLast();
     }
+
+    [PROPERTY_SETTERS]
 }
 ";
 
-    public static function generateClass(string $namespace, string $classname): string
-    {
+    public static function generateClass(
+        string $namespace,
+        string $classname,
+        array $constructorArguments
+    ): string {
+        $baseValues = BaseArgumentsBlock::generate($constructorArguments);
+        $propertySetters = SettersBlock::generate($constructorArguments);
+
         return self::replaceInTemplate(
+            self::TEMPLATE,
             [
                 self::NAMESPACE_PLACEHOLDER         => $namespace,
                 self::CLASSNAME_PLACEHOLDER         => $classname,
+                self::BASE_VALUES_PLACEHOLDER       => $baseValues,
+                self::PROPERTY_SETTERS_PLACEHOLDER  => $propertySetters,
                 self::BUILDER_NAMESPACE_PLACEHOLDER => self::BUILDER_NAMESPACE,
             ]
         );
     }
-
-    private static function replaceInTemplate(array $replacements): string
-    {
-        $placeholders = array_keys($replacements);
-        $values       = array_values($replacements);
-
-        return str_replace($placeholders, $values, self::TEMPLATE);
-    }
-
 }
