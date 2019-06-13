@@ -11,7 +11,7 @@ final class ClassBlock
     private const NAMESPACE_PLACEHOLDER         = '[NAMESPACE]';
     private const CLASSNAME_PLACEHOLDER         = '[CLASSNAME]';
     private const BASE_VALUES_PLACEHOLDER       = '[BASE_VALUES]';
-    private const PROPERTY_SETTERS_PLACEHOLDER  = '[PROPERTY_SETTERS]';
+    private const SETTERS_PLACEHOLDER           = '[SETTERS]';
 
     private const BUILDER_NAMESPACE = 'Xoubaman\Builder\Builder';
 
@@ -42,7 +42,7 @@ final class [CLASSNAME]Builder extends Builder
         return parent::cloneLast();
     }
 
-    [PROPERTY_SETTERS]
+    [SETTERS]
 }
 ";
 
@@ -51,7 +51,7 @@ final class [CLASSNAME]Builder extends Builder
         string $classname,
         array $constructorArguments
     ): string {
-        $baseValues = BaseArgumentsBlock::generate($constructorArguments);
+        $baseValues      = BaseArgumentsBlock::generate($constructorArguments);
         $propertySetters = SettersBlock::generate($constructorArguments);
 
         return self::replaceInTemplate(
@@ -60,7 +60,7 @@ final class [CLASSNAME]Builder extends Builder
                 self::NAMESPACE_PLACEHOLDER         => $namespace,
                 self::CLASSNAME_PLACEHOLDER         => $classname,
                 self::BASE_VALUES_PLACEHOLDER       => $baseValues,
-                self::PROPERTY_SETTERS_PLACEHOLDER  => $propertySetters,
+                self::SETTERS_PLACEHOLDER           => $propertySetters,
                 self::BUILDER_NAMESPACE_PLACEHOLDER => self::BUILDER_NAMESPACE,
             ]
         );

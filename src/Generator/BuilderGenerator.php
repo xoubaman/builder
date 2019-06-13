@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Xoubaman\Builder\Generator;
 
 use Roave\BetterReflection\Reflection\ReflectionClass;
+use Roave\BetterReflection\Reflection\ReflectionParameter;
 
 final class BuilderGenerator
 {
@@ -22,20 +23,24 @@ final class BuilderGenerator
         );
     }
 
+    /** @return Argument[] */
     private function getConstructorArguments(ReflectionClass $reflection): array
     {
-        $properties = $reflection->getConstructor()->getParameters();
+        $constructorParameters = $reflection->getConstructor()->getParameters();
 
-        $parsed = [];
-        foreach ($properties as $property) {
-            $type = $property->getType() ? $property->getType()->__toString() : 'null';
+        return array_map(
+            $this->argumentFromReflectionParameterClosure(),
+            $constructorParameters,
+            []
+        );
+    }
 
-            $parsed[] = new Argument(
-                $property->getName(),
-                $type
-            );
-        }
+    private function argumentFromReflectionParameterClosure(): \Closure
+    {
+        return function (ReflectionParameter $parameter): Argument {
+            $type = $parameter->getType() ? $parameter->getType()->__toString() : 'null';
 
-        return $parsed;
+            return new Argument($parameter->getName(), $type);
+        };
     }
 }

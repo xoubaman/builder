@@ -25,18 +25,24 @@ final class BaseArgumentsBlock
         );
     }
 
+    /** @param Argument[] $constructorArguments */
     private static function buildDefaultArguments(array $constructorArguments): array
     {
-        $defaults = [];
-        /** @var Argument $argument */
-        foreach ($constructorArguments as $argument) {
-            $defaults[] = sprintf(
+        return array_map(
+            self::baseArgumentClosure(),
+            $constructorArguments,
+            []
+        );
+    }
+
+    private static function baseArgumentClosure(): \Closure
+    {
+        return function (Argument $argument): string {
+            return sprintf(
                 "            '%s' => %s,",
                 $argument->name(),
                 $argument->default()
             );
-        }
-
-        return $defaults;
+        };
     }
 }

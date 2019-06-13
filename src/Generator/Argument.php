@@ -34,6 +34,11 @@ final class Argument
         return $this->name;
     }
 
+    public function type(): string
+    {
+        return $this->type;
+    }
+
     public function default(): string
     {
         return $this->default;

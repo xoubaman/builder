@@ -5,9 +5,9 @@ namespace Xoubaman\Builder\Tests\Examples\Generator;
 
 use Xoubaman\Builder\Builder;
 
-final class PocoClassBuilder extends Builder
+final class SampleClassBuilder extends Builder
 {
-    protected const CLASS_TO_BUILD = PocoClass::class;
+    protected const CLASS_TO_BUILD = SampleClass::class;
 
     public function __construct()
     {
@@ -17,26 +17,26 @@ final class PocoClassBuilder extends Builder
         ];
     }
 
-    public function build(): PocoClass
+    public function build(): SampleClass
     {
         return parent::build();
     }
 
-    public function cloneLast(): PocoClass
+    public function cloneLast(): SampleClass
     {
         return parent::cloneLast();
     }
 
     public function withPropertyOne(string $propertyOne): self
     {
-        $this->addToCurrent('property_one', $propertyOne);
+        $this->addToCurrent('propertyOne', $propertyOne);
 
         return $this;
     }
 
     public function withPropertyTwo(bool $propertyTwo): self
     {
-        $this->addToCurrent('property_two', $propertyTwo);
+        $this->addToCurrent('propertyTwo', $propertyTwo);
 
         return $this;
     }

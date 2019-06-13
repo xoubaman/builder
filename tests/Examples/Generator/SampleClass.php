@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests\Examples\Generator;
 
-final class PocoClass
+final class SampleClass
 {
     private $propertyOne;
     private $propertyTwo;
