@@ -14,15 +14,13 @@ final class ClassBlock
     private const BASE_ARGUMENTS_PLACEHOLDER     = '[BASE_ARGUMENTS]';
     private const SETTERS_PLACEHOLDER            = '[SETTERS]';
 
-    private const BUILDER_NAMESPACE = 'Xoubaman\Builder\Builder';
-
     private const TEMPLATE = "".
                              "<?php
 declare(strict_types=1);
 
 namespace [NAMESPACE];
 
-use [BUILDER_NAMESPACE];
+use Xoubaman\Builder\Builder;
 
 final class [CLASSNAME]Builder extends Builder
 {
@@ -66,7 +64,6 @@ final class [CLASSNAME]Builder extends Builder
                 self::ARGUMENT_CONSTANTS_PLACEHOLDER => $argumentConstants,
                 self::BASE_ARGUMENTS_PLACEHOLDER     => $baseValues,
                 self::SETTERS_PLACEHOLDER            => $propertySetters,
-                self::BUILDER_NAMESPACE_PLACEHOLDER  => self::BUILDER_NAMESPACE,
             ]
         );
     }
