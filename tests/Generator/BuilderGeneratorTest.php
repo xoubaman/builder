@@ -13,9 +13,9 @@ class BuilderGeneratorTest extends TestCase
         $builderGenerator = new BuilderGenerator();
         $builderAsString  = $builderGenerator->forClass(SampleClass::class);
 
-        $expectedBuilder = file_get_contents(__DIR__.'/../Examples/Generator/SampleClassBuilder.php');
+        $path = __DIR__.'/../Examples/Generator/SampleClassBuilder.php';
 
-        self::assertEquals($expectedBuilder, $builderAsString);
+        self::assertStringEqualsFile($path, $builderAsString);
     }
 
 }

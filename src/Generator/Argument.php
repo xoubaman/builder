@@ -5,14 +5,14 @@ namespace Xoubaman\Builder\Generator;
 
 final class Argument
 {
-
     private const DEFAULTS = [
-        'string' => "'some string'",
-        'bool'   => 'true',
-        'int'    => '0',
-        'float'  => '0.0',
-        'null'   => 'null',
-        'array'  => '[]',
+        'string'   => "'some string'",
+        'bool'     => 'true',
+        'int'      => '0',
+        'float'    => '0.0',
+        'null'     => 'null',
+        'array'    => '[]',
+        'callable' => 'function(){}',
     ];
 
     /** @var string */
@@ -42,5 +42,12 @@ final class Argument
     public function default(): string
     {
         return $this->default;
+    }
+
+    public function nameInScreamingSnakeCase(): string
+    {
+        return strtoupper(
+            preg_replace('/(?<!^)[A-Z]/', '_$0', $this->name)
+        );
     }
 }

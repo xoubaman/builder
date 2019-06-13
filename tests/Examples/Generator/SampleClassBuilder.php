@@ -9,11 +9,14 @@ final class SampleClassBuilder extends Builder
 {
     protected const CLASS_TO_BUILD = SampleClass::class;
 
+    private const PROPERTY_ONE = 'propertyOne';
+    private const PROPERTY_TWO = 'propertyTwo';
+
     public function __construct()
     {
         $this->base = [
-            'propertyOne' => 'some string',
-            'propertyTwo' => true,
+            self::PROPERTY_ONE => 'some string',
+            self::PROPERTY_TWO => true,
         ];
     }
 
@@ -29,14 +32,14 @@ final class SampleClassBuilder extends Builder
 
     public function withPropertyOne(string $propertyOne): self
     {
-        $this->addToCurrent('propertyOne', $propertyOne);
+        $this->addToCurrent(self::PROPERTY_ONE, $propertyOne);
 
         return $this;
     }
 
     public function withPropertyTwo(bool $propertyTwo): self
     {
-        $this->addToCurrent('propertyTwo', $propertyTwo);
+        $this->addToCurrent(self::PROPERTY_TWO, $propertyTwo);
 
         return $this;
     }

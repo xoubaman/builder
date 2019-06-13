@@ -39,8 +39,8 @@ final class BaseArgumentsBlock
     {
         return function (Argument $argument): string {
             return sprintf(
-                "            '%s' => %s,",
-                $argument->name(),
+                "            self::%s => %s,",
+                $argument->nameInScreamingSnakeCase(),
                 $argument->default()
             );
         };
