@@ -17,5 +17,4 @@ class BuilderGeneratorTest extends TestCase
 
         self::assertStringEqualsFile($path, $builderAsString);
     }
-
 }

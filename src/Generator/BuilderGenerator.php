@@ -5,6 +5,7 @@ namespace Xoubaman\Builder\Generator;
 
 use Roave\BetterReflection\Reflection\ReflectionClass;
 use Roave\BetterReflection\Reflection\ReflectionParameter;
+use Roave\BetterReflection\Reflection\ReflectionType;
 
 final class BuilderGenerator
 {
@@ -38,7 +39,7 @@ final class BuilderGenerator
     private function argumentFromReflectionParameterClosure(): \Closure
     {
         return function (ReflectionParameter $parameter): Argument {
-            $type = $parameter->getType() ? $parameter->getType()->__toString() : 'null';
+            $type = $parameter->getType() instanceof ReflectionType ? $parameter->getType()->__toString() : 'null';
 
             return new Argument($parameter->getName(), $type);
         };

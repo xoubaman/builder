@@ -46,8 +46,8 @@ final class Argument
 
     public function nameInScreamingSnakeCase(): string
     {
-        return strtoupper(
-            preg_replace('/(?<!^)[A-Z]/', '_$0', $this->name)
-        );
+        $snakeCase = (string)preg_replace('/(?<!^)[A-Z]/', '_$0', $this->name);
+
+        return strtoupper($snakeCase);
     }
 }
