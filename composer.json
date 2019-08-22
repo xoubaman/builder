@@ -6,7 +6,8 @@
     ],
     "require": {
         "php": ">=7.2",
-        "roave/better-reflection": "^3.4"
+        "roave/better-reflection": "^3.4",
+        "symfony/console": "^4.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0",
