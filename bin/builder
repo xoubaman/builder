@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Xoubaman\Builder\Command\GenerateBuilderCommand;
+use Xoubaman\Builder\Generator\BuilderGenerator;
+
+(function () {
+    error_reporting(E_ALL);
+
+    $possibleAutoloaderPaths = [
+        getcwd().'/vendor/autoload.php',
+        __DIR__.'/../vendor/autoload.php',
+    ];
+
+    foreach ($possibleAutoloaderPaths as $autoloaderPath) {
+        if (is_file($autoloaderPath)) {
+            require_once $autoloaderPath;
+            break;
+        }
+    }
+
+    $command = new GenerateBuilderCommand(
+        new BuilderGenerator()
+    );
+
+    $input = new ArrayInput([GenerateBuilderCommand::NAME]);
+
+    $application = new Application();
+    $application->add($command);
+    $application->run($input);
+})();
