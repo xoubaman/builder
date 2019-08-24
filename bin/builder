@@ -1,0 +1,30 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+use Symfony\Component\Console\Application;
+use Xoubaman\Builder\Command\GenerateBuilderCommand;
+use Xoubaman\Builder\Generator\BuilderGenerator;
+use Xoubaman\Builder\Rebel;
+
+error_reporting(E_ALL);
+
+$possibleAutoloaderPaths = [
+    getcwd().'/vendor/autoload.php',
+    __DIR__.'/../vendor/autoload.php',
+];
+
+foreach ($possibleAutoloaderPaths as $autoloaderPath) {
+    if (is_file($autoloaderPath)) {
+        require_once $autoloaderPath;
+        break;
+    }
+}
+
+$command = new GenerateBuilderCommand(
+    new BuilderGenerator()
+);
+
+$application = new Application();
+$application->add($command);
+$application->run();
