@@ -34,5 +34,8 @@
             "vendor/bin/phpunit",
             "vendor/bin/phpstan analyse"
         ]
-    }
+    },
+    "bin": [
+        "bin/builder"
+    ]
 }
