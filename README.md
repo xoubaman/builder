@@ -11,51 +11,79 @@ Add it to your project dependencies with composer:
 
     composer require --dev xoubaman/builder
 
-## Create your builders
+## Usage
 
-Create your custom builder extending `Xoubaman\Builder\Builder`;
+Generate a builder for some class with the `builder` bin in vendor folder,
+providing a fully qualified name of a the class:
 
-Define the class the builder will create in the class constant
-`CLASS_TO_BUILD`.
+    vendor/bin/builder build "Game\MetalSlugCharacter"
 
-Define a default data setup in the constructors or directly in the `$base`
-property.
+Now we have the `Game\MetalSlugCharacterBuilder`.
 
-Add setters at your convenience to modify the data setup for the next instance,
-using the protected method `addToCurrent()`.
-
-Example:
+If our class is:
 
 ```php
-//The class we want to build
 final class MetalSlugCharacter
 {
     /** @var string */
     private $name;
     /** @var Weapon */
     private $weapon;
+    /** @var int */
+    private $bombs;
 
-    public function __construct(string $name, Weapon $weapon)
+    public function __construct(string $name, Weapon $weapon, int $bombs)
     {
         $this->name   = $name;
         $this->weapon = $weapon;
+        $this->bombs  = $bombs;
     }
 }
+```
 
+With the builder we can do:
+
+```php
+    $builder = new MetalSlugCharacterBuilder();
+    
+    //A new instance with default values
+    $character = $builder->build();
+    
+    //A new instance with a different setup
+    $character = $builder
+                    ->withName('Eri Kasamoto')
+                    ->withWeapon(new BigMachineGun())
+                    ->build();
+    
+    //A new instance with the same setup as the last one created
+    $character = $builder->cloneLast();
+```
+
+Each time you call the build() method the current setup will be wiped out
+and calling build() again will return an instance with default values.
+
+The `builder` bin will generate a default value for each class constructor
+parameter using reflection. It is not specially smart so it is very likely the
+generated builder will need some tweaking.
+
+The generated builder will look like the following:
+
+```php
 final class MetalSlugCharacterBuilder extends Builder
 {
-    //Define here the name of the clase being built
     protected const CLASS_TO_BUILD = MetalSlugCharacter::class;
 
     public function __construct()
     {
+        //Here the command generates default values and probably you will have to change them
         $this->base = [
-            'name'    => 'Marco Rossi',
-            'weapon'  => new RocketLauncher(),
+            'name'   => 'Marco Rossi',
+            'weapon' => new RocketLauncher(),
+            'bombs'  => 10,
         ];
     }
 
-    // Override parent method to add return type hint
+    //Methods build() and cloneLast() are override for type hinting
     public function build(): MetalSlugCharacter
     {
         return parent::build();
@@ -66,7 +94,6 @@ final class MetalSlugCharacterBuilder extends Builder
         return parent::cloneLast();
     }
 
-    //Change the current setup with setters like this one
     public function withName(string $name): self
     {
         $this->addToCurrent('name', $name);
@@ -80,35 +107,40 @@ final class MetalSlugCharacterBuilder extends Builder
 
         return $this;
     }
-}
 
+    public function withBombs(int $bombs): self
+    {
+        $this->addToCurrent('bombs', $bombs);
+
+        return $this;
+    }
+}
 ```
 
-## Usage
+## Adding more swag
 
-The parent `Builder` class exposes two public methods by default.
-
-The `build()` method returns an instance with the current data setup. Initial data
-setup is the one defined in the `$base` Each time the method is called the data
-setup is wiped, so the next instance built will start over from the initial
-setup.
-
-The `cloneLast()` method returns a new instance with the same setup as the last
-one built.
-
-## Add more swag
-
-Consider overriding `build()` and `cloneLast()` methods calling the parent ones
-to take advantage of return type hints.
-
-Consider adding static factory methods to encapsulate setups you end up doing
-over and over again. For instance, in the above example we could have:
+For builder setups used over and over again, encapsulate that setup in a static
+factory method to remove duplication and improve readability. This is a design
+pattern called [Object Mother](https://www.martinfowler.com/bliki/ObjectMother.html):
 
 ```php
-public static function marcoWithMachineGun(): MetalSlugCharacter
+//Instead of doing all the time
+$character = $builder
+                ->withWeapon(new BigMachineGun())
+                ->withBombs(99)
+                ->build();
+
+//Encapuslate the setup in a static factory method
+public static function fullyLoadedWithMachineGun(): MetalSlugCharacter
 {
-    return (new self())->withWeapon(new BigMachineGun())->build();
+    return (new self())
+                ->withWeapon(new BigMachineGun())
+                ->withBombs(99)
+                ->build();
 }
+
+//And use the more readable and meaninguful one liner
+$character = MetalSlugCharacterBuilder::fullyLoadedWithMachineGun();
 ```
 
 ## Why?
@@ -140,11 +172,6 @@ have to change all the tests instantiating a `Robot`.
 If instead you use a builder you will only need to update a single place -the
 builder- for each change in the constructor.
 
-Not mentioning the increase in readability and meaning provided by using
-something like `$marvin = RobotBuilder::marvin()`;
-
-
 ## License
 
 This library is licensed under MIT License. More details in `LICENSE` file.
-

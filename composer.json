@@ -4,6 +4,9 @@
     "keywords": [
         "testing"
     ],
+  "license": [
+    "MIT"
+  ],
     "require": {
         "php": ">=7.2",
         "roave/better-reflection": "^3.4",
