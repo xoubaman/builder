@@ -39,7 +39,6 @@ class GenerateBuilderCommand extends Command
                         'Class FQN to generate the builder from'
                     ),
                 ]
-
             );
     }
 
