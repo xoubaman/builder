@@ -32,15 +32,11 @@ final class SampleClassBuilder extends Builder
 
     public function withPropertyOne(string $propertyOne): self
     {
-        $this->addToCurrent(self::PROPERTY_ONE, $propertyOne);
-
-        return $this;
+        return $this->addToCurrent(self::PROPERTY_ONE, $propertyOne);
     }
 
     public function withPropertyTwo(bool $propertyTwo): self
     {
-        $this->addToCurrent(self::PROPERTY_TWO, $propertyTwo);
-
-        return $this;
+        return $this->addToCurrent(self::PROPERTY_TWO, $propertyTwo);
     }
 }

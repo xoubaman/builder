@@ -42,12 +42,15 @@ abstract class Builder
         return new $class(...\array_values($data));
     }
 
-    final protected function addToCurrent(string $field, $value): void
+    /** @return static */
+    final protected function addToCurrent(string $field, $value)
     {
         if (empty($this->current)) {
             $this->current = $this->base;
         }
 
         $this->current[$field] = $value;
+
+        return $this;
     }
 }

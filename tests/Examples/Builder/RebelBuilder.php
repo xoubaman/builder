@@ -31,22 +31,16 @@ final class RebelBuilder extends Builder
 
     public function withName(string $name): self
     {
-        $this->addToCurrent('name', $name);
-
-        return $this;
+        return $this->addToCurrent('name', $name);
     }
 
     public function withAddress(string $address): self
     {
-        $this->addToCurrent('address', $address);
-
-        return $this;
+        return $this->addToCurrent('address', $address);
     }
 
     public function withShip(string $ship): self
     {
-        $this->addToCurrent('ship', $ship);
-
-        return $this;
+        return $this->addToCurrent('ship', $ship);
     }
 }

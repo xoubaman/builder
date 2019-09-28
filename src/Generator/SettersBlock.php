@@ -15,9 +15,7 @@ final class SettersBlock
     private const TEMPLATE = '
     public function with[PROPERTY_NAME]([PROPERTY_TYPE] $[PROPERTY_VAR]): self
     {
-        $this->addToCurrent(self::[PROPERTY_CONSTANT], $[PROPERTY_VAR]);
-
-        return $this;
+        return $this->addToCurrent(self::[PROPERTY_CONSTANT], $[PROPERTY_VAR]);
     }';
 
     /** @param Argument[] $constructorArguments */

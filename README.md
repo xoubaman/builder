@@ -96,23 +96,17 @@ final class MetalSlugCharacterBuilder extends Builder
 
     public function withName(string $name): self
     {
-        $this->addToCurrent('name', $name);
-
-        return $this;
+        return $this->addToCurrent('name', $name);
     }
 
     public function withWeapon(Weapon $weapon): self
     {
-        $this->addToCurrent('weapon', $weapon);
-
-        return $this;
+        return $this->addToCurrent('weapon', $weapon);
     }
 
     public function withBombs(int $bombs): self
     {
-        $this->addToCurrent('bombs', $bombs);
-
-        return $this;
+        return $this->addToCurrent('bombs', $bombs);
     }
 }
 ```
