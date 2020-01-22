@@ -3,9 +3,8 @@
 namespace Xoubaman\Builder\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Xoubaman\Builder\Builder;
-use Xoubaman\Builder\ClassToBuildNotDefined;
 use Xoubaman\Builder\Tests\Examples\Builder\Rebel;
+use Xoubaman\Builder\Tests\Examples\Builder\RebelArrayBuilder;
 use Xoubaman\Builder\Tests\Examples\Builder\RebelBuilder;
 
 class BuilderTest extends TestCase
@@ -29,7 +28,7 @@ class BuilderTest extends TestCase
             RebelBuilder::DEFAULT_SHIP
         );
 
-        self::assertEquals($instance, $expected);
+        self::assertEquals($expected, $instance);
     }
 
     public function testSetPropertiesAreUsedForNewInstance(): void
@@ -48,7 +47,7 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    public function testAfterABuiltPropertiesAreResetToDefaults(): void
+    public function testAfterABuildPropertiesAreResetToDefaults(): void
     {
         $this->builder->withName('Luke')
                       ->withAddress('Tatooine Farm')
@@ -63,7 +62,7 @@ class BuilderTest extends TestCase
             RebelBuilder::DEFAULT_SHIP
         );
 
-        self::assertEquals($instance, $expected);
+        self::assertEquals($expected, $instance);
     }
 
     public function testLastBuiltInstanceCanBeCloned(): void
@@ -81,7 +80,7 @@ class BuilderTest extends TestCase
             'X-Wing'
         );
 
-        self::assertEquals($instance, $expected);
+        self::assertEquals($expected, $instance);
     }
 
     public function testCloningLastBuiltWhileSettingNewValuesDoNotAffectCurrentBuild(): void
@@ -105,15 +104,21 @@ class BuilderTest extends TestCase
             'Bike'
         );
 
-        self::assertEquals($instance, $expected);
+        self::assertEquals($expected, $instance);
     }
 
-    public function testExceptionThrownIfNoClassToBuildDefined(): void
+    public function testReturnsArrayWhenNoClassToBuildDefined(): void
     {
-        $builder = new class extends Builder
-        {
-        };
-        $this->expectException(ClassToBuildNotDefined::class);
-        $builder->build();
+        $builder = new RebelArrayBuilder();
+
+        $arrayBuilt = $builder->build();
+
+        $expected = [
+            'here'    => 'Han Solo',
+            'address' => 'Tatooine',
+            'ship'    => 'Millennium Falcon',
+        ];
+
+        self::assertEquals($expected, $arrayBuilt);
     }
 }

@@ -6,12 +6,10 @@ namespace Xoubaman\Builder;
 abstract class Builder
 {
     protected const CLASS_TO_BUILD = '';
-    /** @var array */
+
     protected $lastBuilt = [];
-    /** @var array */
-    protected $current = [];
-    /** @var array */
-    protected $base = [];
+    protected $current   = [];
+    protected $base      = [];
 
     public function build()
     {
@@ -30,13 +28,12 @@ abstract class Builder
         return $this->newInstanceWithParameters($this->lastBuilt);
     }
 
-    private function newInstanceWithParameters(
-        array $data
-    ) {
+    private function newInstanceWithParameters(array $data)
+    {
         $class = static::CLASS_TO_BUILD;
 
         if (empty($class)) {
-            throw ClassToBuildNotDefined::inBuilder($this);
+            return $data;
         }
 
         return new $class(...\array_values($data));

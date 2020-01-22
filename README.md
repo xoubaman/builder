@@ -52,15 +52,15 @@ With the builder we can do:
     //A new instance with a different setup
     $character = $builder
                     ->withName('Eri Kasamoto')
-                    ->withWeapon(new BigMachineGun())
+                    ->withWeapon(new HeavyMachineGun())
                     ->build();
     
     //A new instance with the same setup as the last one created
     $character = $builder->cloneLast();
 ```
 
-Each time you call the build() method the current setup will be wiped out
-and calling build() again will return an instance with default values.
+Each time you call the `build()` method the current setup will be wiped out
+and calling `build()` again will return an instance with default values.
 
 The `builder` bin will generate a default value for each class constructor
 parameter using reflection. It is not specially smart so it is very likely the
@@ -111,6 +111,8 @@ final class MetalSlugCharacterBuilder extends Builder
 }
 ```
 
+Do not override the `CLASS_TO_BUILD` constant for the builder to return an array instead of a class instance. Useful for payloads, configuration arrays and the so.
+
 ## Adding more swag
 
 For builder setups used over and over again, encapsulate that setup in a static
@@ -120,7 +122,7 @@ pattern called [Object Mother](https://www.martinfowler.com/bliki/ObjectMother.h
 ```php
 //Instead of doing all the time
 $character = $builder
-                ->withWeapon(new BigMachineGun())
+                ->withWeapon(new HeavyMachineGun())
                 ->withBombs(99)
                 ->build();
 
@@ -128,7 +130,7 @@ $character = $builder
 public static function fullyLoadedWithMachineGun(): MetalSlugCharacter
 {
     return (new self())
-                ->withWeapon(new BigMachineGun())
+                ->withWeapon(new HeavyMachineGun())
                 ->withBombs(99)
                 ->build();
 }

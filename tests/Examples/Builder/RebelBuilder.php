@@ -7,9 +7,9 @@ use Xoubaman\Builder\Builder;
 
 final class RebelBuilder extends Builder
 {
-    const DEFAULT_NAME    = 'Han Solo';
-    const DEFAULT_ADDRESS = 'Tatooine';
-    const DEFAULT_SHIP    = 'Millennium Falcon';
+    public const DEFAULT_NAME    = 'Han Solo';
+    public const DEFAULT_ADDRESS = 'Tatooine';
+    public const DEFAULT_SHIP    = 'Millennium Falcon';
 
     protected const CLASS_TO_BUILD = Rebel::class;
 
