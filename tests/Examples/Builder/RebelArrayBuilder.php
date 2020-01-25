@@ -7,14 +7,12 @@ use Xoubaman\Builder\Builder;
 
 final class RebelArrayBuilder extends Builder
 {
-    public const DEFAULT_NAME    = 'Han Solo';
-    public const DEFAULT_ADDRESS = 'Tatooine';
-    public const DEFAULT_SHIP    = 'Millennium Falcon';
+    private const SHIP = 'ship';
 
     protected $base = [
-        'here'    => self::DEFAULT_NAME,
-        'address' => self::DEFAULT_ADDRESS,
-        'ship'    => self::DEFAULT_SHIP,
+        'here'     => 'Han Solo',
+        'address'  => 'Tatooine',
+        self::SHIP => 'Millennium Falcon',
     ];
 
     public function build(): array
@@ -25,5 +23,10 @@ final class RebelArrayBuilder extends Builder
     public function cloneLast(): array
     {
         return parent::cloneLast();
+    }
+
+    public function withoutShip(): self
+    {
+        return $this->removeFromCurrent(self::SHIP);
     }
 }

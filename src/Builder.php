@@ -13,10 +13,8 @@ abstract class Builder
 
     public function build()
     {
-        $this->current = $this->current + $this->base;
-
-        $instance = $this->newInstanceWithParameters($this->current);
-
+        $this->initCurrentIfNotYet();
+        $instance        = $this->newInstanceWithParameters($this->current);
         $this->lastBuilt = $this->current;
         $this->current   = [];
 
@@ -42,12 +40,26 @@ abstract class Builder
     /** @return static */
     final protected function addToCurrent(string $field, $value)
     {
-        if (empty($this->current)) {
-            $this->current = $this->base;
-        }
-
+        $this->initCurrentIfNotYet();
         $this->current[$field] = $value;
 
         return $this;
+    }
+
+    /** @return static */
+    final protected function removeFromCurrent(string $field)
+    {
+        $this->initCurrentIfNotYet();
+
+        unset($this->current[$field]);
+
+        return $this;
+    }
+
+    final protected function initCurrentIfNotYet(): void
+    {
+        if (empty($this->current)) {
+            $this->current = $this->base;
+        }
     }
 }

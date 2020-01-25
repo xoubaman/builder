@@ -18,7 +18,8 @@ class BuilderTest extends TestCase
         $this->builder = new RebelBuilder();
     }
 
-    public function testItReturnsAnInstanceWithDefaultValues(): void
+    /** @test */
+    public function builds_base_setup_when_called_without_setting_any_parameter(): void
     {
         $instance = $this->builder->build();
 
@@ -31,7 +32,8 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    public function testSetPropertiesAreUsedForNewInstance(): void
+    /** @test */
+    public function builds_configured_setup_when_setting_parameters(): void
     {
         $instance = $this->builder->withName('Luke')
                                   ->withAddress('Tatooine Farm')
@@ -47,7 +49,8 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    public function testAfterABuildPropertiesAreResetToDefaults(): void
+    /** @test */
+    public function builds_base_setup_when_building_after_a_previous_customized_setup_build(): void
     {
         $this->builder->withName('Luke')
                       ->withAddress('Tatooine Farm')
@@ -65,7 +68,8 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    public function testLastBuiltInstanceCanBeCloned(): void
+    /** @test */
+    public function builds_last_setup_when_cloning(): void
     {
         $this->builder->withName('Luke')
                       ->withAddress('Tatooine Farm')
@@ -83,7 +87,8 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    public function testCloningLastBuiltWhileSettingNewValuesDoNotAffectCurrentBuild(): void
+    /** @test */
+    public function current_setup_is_not_affected_when_cloning(): void
     {
         $this->builder->withName('Luke')
                       ->withAddress('Tatooine Farm')
@@ -107,7 +112,8 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    public function testReturnsArrayWhenNoClassToBuildDefined(): void
+    /** @test */
+    public function builds_array_instead_of_intance_when_no_class_defined(): void
     {
         $builder = new RebelArrayBuilder();
 
@@ -117,6 +123,22 @@ class BuilderTest extends TestCase
             'here'    => 'Han Solo',
             'address' => 'Tatooine',
             'ship'    => 'Millennium Falcon',
+        ];
+
+        self::assertEquals($expected, $arrayBuilt);
+    }
+
+    /** @test */
+    public function build_without_base_elements_when_removing_them(): void
+    {
+        $builder = new RebelArrayBuilder();
+
+        $arrayBuilt = $builder->withoutShip()
+                              ->build();
+
+        $expected = [
+            'here'    => 'Han Solo',
+            'address' => 'Tatooine',
         ];
 
         self::assertEquals($expected, $arrayBuilt);
