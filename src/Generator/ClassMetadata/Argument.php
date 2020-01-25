@@ -1,10 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Xoubaman\Builder\Generator;
+namespace Xoubaman\Builder\Generator\ClassMetadata;
+
+use Xoubaman\Builder\Generator\TemplateReplacement;
 
 final class Argument
 {
+    use TemplateReplacement;
+
     private const DEFAULTS = [
         'string'   => "'some string'",
         'bool'     => 'true',
@@ -44,7 +48,7 @@ final class Argument
         return $this->default;
     }
 
-    public function nameInScreamingSnakeCase(): string
+    public function constantName(): string
     {
         $snakeCase = (string)preg_replace('/(?<!^)[A-Z]/', '_$0', $this->name);
 

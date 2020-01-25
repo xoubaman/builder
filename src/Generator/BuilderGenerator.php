@@ -6,25 +6,31 @@ namespace Xoubaman\Builder\Generator;
 use Roave\BetterReflection\Reflection\ReflectionClass;
 use Roave\BetterReflection\Reflection\ReflectionParameter;
 use Roave\BetterReflection\Reflection\ReflectionType;
+use Xoubaman\Builder\Generator\ClassMetadata\Argument;
+use Xoubaman\Builder\Generator\ClassMetadata\ClassMetadata;
 
 final class BuilderGenerator
 {
-    public function forClass(string $class): string
+    public function forClassWithConverter(string $class, Converter $converter): string
     {
-        $reflection = ReflectionClass::createFromName($class);
-        $className  = $reflection->getShortName();
-        $namespace  = $reflection->getNamespaceName();
+        $classMetadata = $this->getClassMetadata($class);
 
+        return $converter($classMetadata);
+    }
+
+    private function getClassMetadata(string $class): ClassMetadata
+    {
+        $reflection           = ReflectionClass::createFromName($class);
         $constructorArguments = $this->getConstructorArguments($reflection);
 
-        return ClassBlock::generateClass(
-            $namespace,
-            $className,
-            $constructorArguments
+        return new ClassMetadata(
+            $reflection->getShortName(),
+            $reflection->getNamespaceName(),
+            ...$constructorArguments
         );
     }
 
-    /** @return Argument[] */
+    /** @return array<Argument> */
     private function getConstructorArguments(ReflectionClass $reflection): array
     {
         $constructorParameters = $reflection->getConstructor()->getParameters();
@@ -39,7 +45,9 @@ final class BuilderGenerator
     private function argumentFromReflectionParameterClosure(): \Closure
     {
         return function (ReflectionParameter $parameter): Argument {
-            $type = $parameter->getType() instanceof ReflectionType ? $parameter->getType()->__toString() : 'null';
+            $type = $parameter->getType() instanceof ReflectionType ?
+                $parameter->getType()->__toString()
+                : 'null';
 
             return new Argument($parameter->getName(), $type);
         };

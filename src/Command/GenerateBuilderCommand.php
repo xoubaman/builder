@@ -9,12 +9,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Xoubaman\Builder\Generator\BuilderGenerator;
+use Xoubaman\Builder\Generator\Converter;
+use Xoubaman\Builder\Generator\Converter\DefaultConverter;
 
 class GenerateBuilderCommand extends Command
 {
     public const NAME = 'build';
 
-    private const ARG_CLASS = 'class';
+    private const ARG_CLASS     = 'class';
+    private const ARG_CONVERTER = 'converter';
 
     /** @var BuilderGenerator */
     private $generator;
@@ -30,13 +33,18 @@ class GenerateBuilderCommand extends Command
     {
         $this
             ->setName(self::NAME)
-            ->setDescription('Creates builders for testing purposes')
+            ->setDescription('Creates a builder for a given class')
             ->setDefinition(
                 [
                     new InputArgument(
                         self::ARG_CLASS,
                         InputArgument::REQUIRED,
                         'Class FQN to generate the builder from'
+                    ),
+                    new InputArgument(
+                        self::ARG_CONVERTER,
+                        InputArgument::OPTIONAL,
+                        'A converter FQN to generate the builder'
                     ),
                 ]
             );
@@ -45,7 +53,8 @@ class GenerateBuilderCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $class           = $this->getClassFromInput($input);
-        $builderContent  = $this->generator->forClass($class);
+        $converter       = $this->getConverter($input);
+        $builderContent  = $this->generator->forClassWithConverter($class, $converter);
         $destinationPath = $this->getPathFromOriginalClass($class);
         $this->createBuilderFile($destinationPath, $builderContent);
         $output->writeln(sprintf("Builder class created in '%s'", $destinationPath));
@@ -88,5 +97,19 @@ class GenerateBuilderCommand extends Command
         $builderClassname = $reflector->getShortName().'Builder.php';
 
         return $dir.DIRECTORY_SEPARATOR.$builderClassname;
+    }
+
+    private function getConverter(InputInterface $input): Converter
+    {
+        $converterClass = $input->getArgument(self::ARG_CONVERTER) ?? DefaultConverter::class;
+
+        $converter = new $converterClass;
+
+        if (!$converter instanceof Converter) {
+            throw new \InvalidArgumentException('Converter parameter is not a Converter implementation');
+        }
+
+        return $converter;
+
     }
 }
