@@ -5,11 +5,11 @@ namespace Xoubaman\Builder\Generator\ClassMetadata;
 
 final class ClassMetadata
 {
-    /** * @var string */
+    /** @var string */
     private $className;
-    /** * @var string */
+    /** @var string */
     private $namespace;
-    /** * @var array */
+    /** @var ArgumentCollection */
     private $arguments;
 
     public function __construct(
