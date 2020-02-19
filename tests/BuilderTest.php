@@ -10,18 +10,21 @@ use Xoubaman\Builder\Tests\Examples\Builder\RebelBuilder;
 class BuilderTest extends TestCase
 {
     /** @var RebelBuilder */
-    private $builder;
+    private $objectBuilder;
+    /** @var RebelArrayBuilder */
+    private $arrayBuilder;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->builder = new RebelBuilder();
+        $this->objectBuilder = new RebelBuilder();
+        $this->arrayBuilder  = new RebelArrayBuilder();
     }
 
     /** @test */
     public function builds_base_setup_when_called_without_setting_any_parameter(): void
     {
-        $instance = $this->builder->build();
+        $instance = $this->objectBuilder->build();
 
         $expected = new Rebel(
             RebelBuilder::DEFAULT_NAME,
@@ -35,10 +38,10 @@ class BuilderTest extends TestCase
     /** @test */
     public function builds_configured_setup_when_setting_parameters(): void
     {
-        $instance = $this->builder->withName('Luke')
-                                  ->withAddress('Tatooine Farm')
-                                  ->withShip('X-Wing')
-                                  ->build();
+        $instance = $this->objectBuilder->withName('Luke')
+                                        ->withAddress('Tatooine Farm')
+                                        ->withShip('X-Wing')
+                                        ->build();
 
         $expected = new Rebel(
             'Luke',
@@ -52,12 +55,12 @@ class BuilderTest extends TestCase
     /** @test */
     public function builds_base_setup_when_building_after_a_previous_customized_setup_build(): void
     {
-        $this->builder->withName('Luke')
-                      ->withAddress('Tatooine Farm')
-                      ->withShip('X-Wing')
-                      ->build();
+        $this->objectBuilder->withName('Luke')
+                            ->withAddress('Tatooine Farm')
+                            ->withShip('X-Wing')
+                            ->build();
 
-        $instance = $this->builder->build();
+        $instance = $this->objectBuilder->build();
 
         $expected = new Rebel(
             RebelBuilder::DEFAULT_NAME,
@@ -71,12 +74,12 @@ class BuilderTest extends TestCase
     /** @test */
     public function builds_last_setup_when_cloning(): void
     {
-        $this->builder->withName('Luke')
-                      ->withAddress('Tatooine Farm')
-                      ->withShip('X-Wing')
-                      ->build();
+        $this->objectBuilder->withName('Luke')
+                            ->withAddress('Tatooine Farm')
+                            ->withShip('X-Wing')
+                            ->build();
 
-        $instance = $this->builder->cloneLast();
+        $instance = $this->objectBuilder->cloneLast();
 
         $expected = new Rebel(
             'Luke',
@@ -90,18 +93,18 @@ class BuilderTest extends TestCase
     /** @test */
     public function current_setup_is_not_affected_when_cloning(): void
     {
-        $this->builder->withName('Luke')
-                      ->withAddress('Tatooine Farm')
-                      ->withShip('X-Wing')
-                      ->build();
+        $this->objectBuilder->withName('Luke')
+                            ->withAddress('Tatooine Farm')
+                            ->withShip('X-Wing')
+                            ->build();
 
-        $this->builder->withName('Leia')
-                      ->withAddress('Endor Moon')
-                      ->withShip('Bike');
+        $this->objectBuilder->withName('Leia')
+                            ->withAddress('Endor Moon')
+                            ->withShip('Bike');
 
-        $this->builder->cloneLast();
+        $this->objectBuilder->cloneLast();
 
-        $instance = $this->builder->build();
+        $instance = $this->objectBuilder->build();
 
         $expected = new Rebel(
             'Leia',
@@ -115,12 +118,10 @@ class BuilderTest extends TestCase
     /** @test */
     public function builds_array_instead_of_intance_when_no_class_defined(): void
     {
-        $builder = new RebelArrayBuilder();
-
-        $arrayBuilt = $builder->build();
+        $arrayBuilt = $this->arrayBuilder->build();
 
         $expected = [
-            'here'    => 'Han Solo',
+            'name'    => 'Han Solo',
             'address' => 'Tatooine',
             'ship'    => 'Millennium Falcon',
         ];
@@ -131,14 +132,28 @@ class BuilderTest extends TestCase
     /** @test */
     public function build_without_base_elements_when_removing_them(): void
     {
-        $builder = new RebelArrayBuilder();
-
-        $arrayBuilt = $builder->withoutShip()
-                              ->build();
+        $arrayBuilt = $this->arrayBuilder->withoutShip()
+                                         ->build();
 
         $expected = [
-            'here'    => 'Han Solo',
+            'name'    => 'Han Solo',
             'address' => 'Tatooine',
+        ];
+
+        self::assertEquals($expected, $arrayBuilt);
+    }
+
+    /** @test */
+    public function is_able_to_build_when_modifying_nested_data(): void
+    {
+        $arrayBuilt = $this->arrayBuilder
+            ->withNestedAddress('cantina')
+            ->build();
+
+        $expected = [
+            'name'    => 'Han Solo',
+            'address' => ['Tatooine' => 'cantina'],
+            'ship'    => 'Millennium Falcon',
         ];
 
         self::assertEquals($expected, $arrayBuilt);

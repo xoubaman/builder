@@ -53,7 +53,9 @@ There are two built-in public methods to build instances:
 To modify the data setup there are two non-public methods:
 
 * `addToCurrent(string $field, $value)` will set the value of `$field` in the current data setup.
-* `removeFromCurrent(string $field)` will remove `$field` from the current data setup. Note this will probably cause errors when building class instances. 
+* `removeFromCurrent(string $field)` will remove `$field` from the current data setup. Note this will probably cause errors when building class instances.
+* `currentSetup()` will return the whole current data setup, useful to apply more complex operations than adding or removing stuff.
+* `replaceCurrentSetup(array $newSetup)` will replace the whole current setup, handy to set data transformed after a `currentSetup()`. 
 
 The following is an example of a builder, quite similar to what the generator will create:
 
