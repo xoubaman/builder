@@ -65,31 +65,13 @@ class GenerateBuilderCommand extends Command
         $class = $input->getArgument(self::ARG_CLASS);
 
         if (!is_string($class)) {
-            throw new \RuntimeException('Cannot read classname from input');
+            throw new \InvalidArgumentException('Cannot read classname from input');
         }
 
         return $class;
     }
 
-    private function getPathFromOriginalClass($class): string
-    {
-        $path = $this->getBuilderPath($class);
-
-        if (file_exists($path)) {
-            throw FileAlreadyExists::inPath($path);
-        }
-
-        return $path;
-    }
-
-    private function createBuilderFile($path, string $builderContent): void
-    {
-        if (file_put_contents($path, $builderContent) === false) {
-            throw new \RuntimeException(sprintf('Failed to create file %s', $path));
-        };
-    }
-
-    private function getBuilderPath(string $class): string
+    private function getPathFromOriginalClass(string $class): string
     {
         $reflector        = ReflectionClass::createFromName($class);
         $file             = (string)$reflector->getFileName();
@@ -97,6 +79,17 @@ class GenerateBuilderCommand extends Command
         $builderClassname = $reflector->getShortName().'Builder.php';
 
         return $dir.DIRECTORY_SEPARATOR.$builderClassname;
+    }
+
+    private function createBuilderFile($path, string $builderContent): void
+    {
+        if (file_exists($path)) {
+            throw FileAlreadyExists::inPath($path);
+        }
+
+        if (file_put_contents($path, $builderContent) === false) {
+            throw new \RuntimeException(sprintf('Failed to create file %s', $path));
+        };
     }
 
     private function getConverter(InputInterface $input): Converter

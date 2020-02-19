@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests\Command;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Exception\RuntimeException;
+use RuntimeException;
 use Symfony\Component\Console\Tester\CommandTester;
 use Xoubaman\Builder\Command\FileAlreadyExists;
 use Xoubaman\Builder\Command\GenerateBuilderCommand;
 use Xoubaman\Builder\Generator\BuilderGenerator;
-use Xoubaman\Builder\Generator\Converter\DefaultConverter;
 
 class GenerateBuilderCommandTest extends TestCase
 {
@@ -43,6 +43,20 @@ class GenerateBuilderCommandTest extends TestCase
     {
         self::expectException(RuntimeException::class);
         $this->commandTester->execute([]);
+    }
+
+    /** @test */
+    public function fails_when_provided_classname_is_not_just_a_classname(): void
+    {
+        self::expectException(InvalidArgumentException::class);
+        $this->commandTester->execute(
+            [
+                'class' => [
+                    ClassWithBuilder::class,
+                    ClassWithBuilder::class,
+                ],
+            ]
+        );
     }
 
     /** @test */
@@ -83,7 +97,7 @@ class GenerateBuilderCommandTest extends TestCase
     /** @test */
     public function fails_when_provided_converter_is_not_a_converter(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->commandTester->execute(
             [
                 'class'     => EmptyClass::class,
