@@ -110,6 +110,5 @@ class GenerateBuilderCommand extends Command
         }
 
         return $converter;
-
     }
 }

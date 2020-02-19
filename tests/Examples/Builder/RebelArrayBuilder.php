@@ -10,7 +10,7 @@ final class RebelArrayBuilder extends Builder
     private const SHIP = 'ship';
 
     protected $base = [
-        'here'     => 'Han Solo',
+        'name'     => 'Han Solo',
         'address'  => 'Tatooine',
         self::SHIP => 'Millennium Falcon',
     ];
@@ -28,5 +28,18 @@ final class RebelArrayBuilder extends Builder
     public function withoutShip(): self
     {
         return $this->removeFromCurrent(self::SHIP);
+    }
+
+    public function withNestedAddress(string $nestedAddress): self
+    {
+        $setup = $this->currentSetup();
+        $currentAddress = $setup['address'];
+        $newAddress = [$currentAddress => $nestedAddress];
+        $setup['address'] = $newAddress;
+
+        return $this->replaceCurrentSetup($setup);
+
+
+        return $this;
     }
 }

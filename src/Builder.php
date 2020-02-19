@@ -56,6 +56,21 @@ abstract class Builder
         return $this;
     }
 
+    final protected function currentSetup(): array
+    {
+        $this->initCurrentIfNotYet();
+
+        return $this->current;
+    }
+
+    /** @return static */
+    final protected function replaceCurrentSetup(array $setup)
+    {
+        $this->current = $setup;
+
+        return $this;
+    }
+
     final protected function initCurrentIfNotYet(): void
     {
         if (empty($this->current)) {
