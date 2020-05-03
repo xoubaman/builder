@@ -16,7 +16,7 @@ class GenerateBuilderCommand extends Command
 {
     public const NAME = 'build';
 
-    private const ARG_CLASS     = 'class';
+    private const ARG_CLASS = 'class';
     private const ARG_CONVERTER = 'converter';
 
     /** @var BuilderGenerator */
@@ -50,7 +50,7 @@ class GenerateBuilderCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $class           = $this->getClassFromInput($input);
         $converter       = $this->getConverter($input);
@@ -58,6 +58,8 @@ class GenerateBuilderCommand extends Command
         $destinationPath = $this->getPathFromOriginalClass($class);
         $this->createBuilderFile($destinationPath, $builderContent);
         $output->writeln(sprintf("Builder class created in '%s'", $destinationPath));
+
+        return 1;
     }
 
     private function getClassFromInput(InputInterface $input): string
@@ -76,9 +78,9 @@ class GenerateBuilderCommand extends Command
         $reflector        = ReflectionClass::createFromName($class);
         $file             = (string)$reflector->getFileName();
         $dir              = dirname($file);
-        $builderClassname = $reflector->getShortName().'Builder.php';
+        $builderClassname = $reflector->getShortName() . 'Builder.php';
 
-        return $dir.DIRECTORY_SEPARATOR.$builderClassname;
+        return $dir . DIRECTORY_SEPARATOR . $builderClassname;
     }
 
     private function createBuilderFile($path, string $builderContent): void
