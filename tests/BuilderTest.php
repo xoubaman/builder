@@ -95,6 +95,18 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
+    public function last_setup_can_be_recovered_after_building(): void
+    {
+        $firstInstance = $this->objectBuilder->withName('Luke')
+                                             ->withAddress('Tatooine Farm')
+                                             ->withShip('X-Wing')
+                                             ->build();
+
+        $secondInstance = $this->objectBuilder->repeatLastSetup()->build();
+
+        self::assertEquals($firstInstance, $secondInstance);
+    }
+
     /** @test */
     public function current_setup_is_not_affected_when_cloning(): void
     {

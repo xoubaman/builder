@@ -47,6 +47,13 @@ abstract class Builder
         return $this->newInstanceWithParameters($this->lastBuilt);
     }
 
+    public function repeatLastSetup(): self
+    {
+        $this->current = $this->lastBuilt;
+
+        return $this;
+    }
+
     /**
      * @param array<mixed> $data
      * @return mixed
