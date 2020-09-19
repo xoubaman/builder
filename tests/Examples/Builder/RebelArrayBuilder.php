@@ -38,8 +38,5 @@ final class RebelArrayBuilder extends Builder
         $setup['address'] = $newAddress;
 
         return $this->replaceCurrentSetup($setup);
-
-
-        return $this;
     }
 }

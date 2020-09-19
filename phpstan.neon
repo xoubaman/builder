@@ -1,5 +1,8 @@
 parameters:
-    level: 7
+    level: max
     paths:
         - %currentWorkingDirectory%/src
         - %currentWorkingDirectory%/tests
+    excludes_analyse:
+        - tests/Examples/*
+

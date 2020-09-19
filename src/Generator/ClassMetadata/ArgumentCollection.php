@@ -13,6 +13,7 @@ final class ArgumentCollection
         $this->arguments = $arguments;
     }
 
+    /** @return mixed */
     public function mapWith(callable $callable)
     {
         return array_map($callable, $this->arguments);

@@ -7,10 +7,14 @@ abstract class Builder
 {
     protected const CLASS_TO_BUILD = '';
 
+    /** @var array<mixed> */
     protected $lastBuilt = [];
+    /** @var array<mixed> */
     protected $current   = [];
+    /** @var array<mixed> */
     protected $base      = [];
 
+    /** @return mixed */
     public function build()
     {
         $this->initCurrentIfNotYet();
@@ -21,11 +25,16 @@ abstract class Builder
         return $instance;
     }
 
+    /** @return mixed */
     public function cloneLast()
     {
         return $this->newInstanceWithParameters($this->lastBuilt);
     }
 
+    /**
+     * @param array<mixed> $data
+     * @return mixed
+     */
     private function newInstanceWithParameters(array $data)
     {
         $class = static::CLASS_TO_BUILD;
@@ -37,7 +46,10 @@ abstract class Builder
         return new $class(...\array_values($data));
     }
 
-    /** @return static */
+    /**
+     * @param mixed $value
+     * @return static
+     */
     final protected function addToCurrent(string $field, $value)
     {
         $this->initCurrentIfNotYet();
@@ -56,6 +68,7 @@ abstract class Builder
         return $this;
     }
 
+    /** @return array<mixed> */
     final protected function currentSetup(): array
     {
         $this->initCurrentIfNotYet();
@@ -63,7 +76,10 @@ abstract class Builder
         return $this->current;
     }
 
-    /** @return static */
+    /**
+     * @param array<mixed> $setup
+     * @return static
+     */
     final protected function replaceCurrentSetup(array $setup)
     {
         $this->current = $setup;
