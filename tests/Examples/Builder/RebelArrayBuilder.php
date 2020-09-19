@@ -7,13 +7,17 @@ use Xoubaman\Builder\Builder;
 
 final class RebelArrayBuilder extends Builder
 {
-    private const SHIP = 'ship';
+    private const SHIP    = 'ship';
+    private const ADDRESS = 'address';
 
-    protected $base = [
-        'name'     => 'Han Solo',
-        'address'  => 'Tatooine',
-        self::SHIP => 'Millennium Falcon',
-    ];
+    public function __construct()
+    {
+        $this->base = [
+            'name'        => 'Han Solo',
+            self::ADDRESS => 'Tatooine',
+            self::SHIP    => 'Millennium Falcon',
+        ];
+    }
 
     public function build(): array
     {
@@ -32,10 +36,10 @@ final class RebelArrayBuilder extends Builder
 
     public function withNestedAddress(string $nestedAddress): self
     {
-        $setup = $this->currentSetup();
-        $currentAddress = $setup['address'];
-        $newAddress = [$currentAddress => $nestedAddress];
-        $setup['address'] = $newAddress;
+        $setup                = $this->currentSetup();
+        $currentAddress       = $setup[self::ADDRESS];
+        $newAddress           = [$currentAddress => $nestedAddress];
+        $setup[self::ADDRESS] = $newAddress;
 
         return $this->replaceCurrentSetup($setup);
     }

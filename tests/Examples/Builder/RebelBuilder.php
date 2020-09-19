@@ -11,13 +11,20 @@ final class RebelBuilder extends Builder
     public const DEFAULT_ADDRESS = 'Tatooine';
     public const DEFAULT_SHIP    = 'Millennium Falcon';
 
+    private const NAME    = 'name';
+    private const ADDRESS = 'address';
+    private const SHIP    = 'ship';
+
     protected const CLASS_TO_BUILD = Rebel::class;
 
-    protected $base = [
-        'name'    => self::DEFAULT_NAME,
-        'address' => self::DEFAULT_ADDRESS,
-        'ship'    => self::DEFAULT_SHIP,
-    ];
+    public function __construct()
+    {
+        $this->base = [
+            self::NAME    => self::DEFAULT_NAME,
+            self::ADDRESS => self::DEFAULT_ADDRESS,
+            self::SHIP    => self::DEFAULT_SHIP,
+        ];
+    }
 
     public function build(): Rebel
     {

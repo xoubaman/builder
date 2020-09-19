@@ -11,11 +11,20 @@ class Rebel
     private $address;
     /** @var string */
     private $ship;
+    /** @var bool */
+    public $isTemptedByTheDarkSide;
 
     public function __construct(string $name, string $address, string $ship)
     {
         $this->name    = $name;
         $this->address = $address;
         $this->ship    = $ship;
+
+        $this->isTemptedByTheDarkSide = true;
+    }
+
+    public function removeTemptations(): void
+    {
+        $this->isTemptedByTheDarkSide = false;
     }
 }
