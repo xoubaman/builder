@@ -1,11 +1,16 @@
 {
     "name": "xoubaman/builder",
     "description": "A library for reusable builders",
+    "type": "library",
     "keywords": [
         "testing"
     ],
-    "license": [
-        "MIT"
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Carlos Gándara",
+            "email": "xoubaman@gmail.com"
+        }
     ],
     "require": {
         "php": ">=7.2",
