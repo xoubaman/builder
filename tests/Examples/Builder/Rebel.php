@@ -23,8 +23,13 @@ class Rebel
         $this->isTemptedByTheDarkSide = true;
     }
 
-    public function removeTemptations(): void
+    public function setTemptationByDarkSide(bool $isTempted): void
     {
-        $this->isTemptedByTheDarkSide = false;
+        $this->isTemptedByTheDarkSide = $isTempted;
+    }
+
+    public function isTemptedByDarkSide(): bool
+    {
+        return $this->isTemptedByTheDarkSide;
     }
 }

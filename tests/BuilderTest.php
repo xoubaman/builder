@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\Rebel;
 use Xoubaman\Builder\Tests\Examples\Builder\RebelArrayBuilder;
 use Xoubaman\Builder\Tests\Examples\Builder\RebelBuilder;
+use Xoubaman\Builder\Tests\Examples\Builder\RebelBuilderWithCallback;
 
 class BuilderTest extends TestCase
 {
@@ -14,12 +15,15 @@ class BuilderTest extends TestCase
     private $objectBuilder;
     /** @var RebelArrayBuilder */
     private $arrayBuilder;
+    /** @var RebelBuilderWithCallback */
+    private $objectBuilderWithCallback;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->objectBuilder = new RebelBuilder();
-        $this->arrayBuilder  = new RebelArrayBuilder();
+        $this->objectBuilder             = new RebelBuilder();
+        $this->arrayBuilder              = new RebelArrayBuilder();
+        $this->objectBuilderWithCallback = new RebelBuilderWithCallback();
     }
 
     /** @test */
@@ -117,7 +121,7 @@ class BuilderTest extends TestCase
     }
 
     /** @test */
-    public function builds_array_instead_of_intance_when_no_class_defined(): void
+    public function builds_array_instead_of_instance_when_no_class_defined(): void
     {
         $arrayBuilt = $this->arrayBuilder->build();
 
@@ -158,5 +162,15 @@ class BuilderTest extends TestCase
         ];
 
         self::assertEquals($expected, $arrayBuilt);
+    }
+
+    /** @test */
+    public function it_calls_method_after_build_when_defined(): void
+    {
+        $rebelWithoutCallback = $this->objectBuilder->build();
+        self::assertTrue($rebelWithoutCallback->isTemptedByDarkSide());
+
+        $rebelWithCallback = $this->objectBuilderWithCallback->build();
+        self::assertFalse($rebelWithCallback->isTemptedByDarkSide());
     }
 }
