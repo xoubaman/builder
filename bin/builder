@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Symfony\Component\Console\Application;
+use Xoubaman\Builder\Command\FileSystemWriter;
 use Xoubaman\Builder\Command\GenerateBuilderCommand;
 use Xoubaman\Builder\Generator\BuilderGenerator;
-use Xoubaman\Builder\Rebel;
 
 error_reporting(E_ALL);
 
@@ -22,7 +22,8 @@ foreach ($possibleAutoloaderPaths as $autoloaderPath) {
 }
 
 $command = new GenerateBuilderCommand(
-    new BuilderGenerator()
+    new BuilderGenerator(),
+    new FileSystemWriter()
 );
 
 $application = new Application();

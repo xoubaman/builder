@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests\Command;
 
+use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -15,40 +16,33 @@ class GenerateBuilderCommandTest extends TestCase
 {
     /** @var CommandTester */
     private $commandTester;
-    /** @var string */
-    private $generatedBuilderPath = '';
+    /** @var InMemoryWriter */
+    private $writer;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->writer        = new InMemoryWriter();
         $this->commandTester = new CommandTester(
             new GenerateBuilderCommand(
-                new BuilderGenerator()
+                new BuilderGenerator(),
+                $this->writer
             )
         );
-    }
-
-    protected function tearDown(): void
-    {
-        if (!empty($this->generatedBuilderPath)) {
-            unlink($this->generatedBuilderPath); //How crappy is this? :D
-        }
-
-        parent::tearDown();
     }
 
     /** @test */
     public function fails_when_no_classname_passed_as_parameter(): void
     {
-        self::expectException(RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->commandTester->execute([]);
     }
 
     /** @test */
     public function fails_when_provided_classname_is_not_just_a_classname(): void
     {
-        self::expectException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->commandTester->execute(
             [
                 'class' => [
@@ -63,20 +57,21 @@ class GenerateBuilderCommandTest extends TestCase
     public function creates_a_builder_when_called_with_a_classname(): void
     {
         $this->commandTester->execute(['class' => EmptyClass::class]);
-        $this->generatedBuilderPath = __DIR__.'/EmptyClassBuilder.php';
+        $expectedBuilderPath = __DIR__ . '/EmptyClassBuilder.php';
 
-        self::assertFileExists($this->generatedBuilderPath);
+        self::assertNotEmpty($this->writer->contentWrittenInPath($expectedBuilderPath));
     }
 
     /** @test */
-    public function fails_when_file_for_saving_the_builder_already_exists(): void
+    public function fails_when_builder_file_already_exists(): void
     {
-        self::expectException(FileAlreadyExists::class);
+        $this->writer->writeIn(__DIR__ . '/ClassWithBuilderBuilder.php', 'There is a file in this path');
+        $this->expectException(FileAlreadyExists::class);
         $this->commandTester->execute(['class' => ClassWithBuilder::class]);
     }
 
     /** @test */
-    public function uses_the_provided_converter_when_there_is_one(): void
+    public function uses_concrete_converter_when_provided(): void
     {
         $this->commandTester->execute(
             [
@@ -84,14 +79,10 @@ class GenerateBuilderCommandTest extends TestCase
                 'converter' => VanilaConverter::class,
             ]
         );
-        $this->generatedBuilderPath = __DIR__.'/EmptyClassBuilder.php';
-        self::assertFileExists($this->generatedBuilderPath);
 
-        $expectedContent = VanilaConverter::OUTPUT;
-        self::assertEquals(
-            $expectedContent,
-            file_get_contents($this->generatedBuilderPath)
-        );
+        $generatedBuilderContent = $this->writer->contentWrittenInPath(__DIR__ . '/EmptyClassBuilder.php');
+        $expectedContent         = VanilaConverter::OUTPUT;
+        self::assertEquals($expectedContent, $generatedBuilderContent);
     }
 
     /** @test */
@@ -101,7 +92,7 @@ class GenerateBuilderCommandTest extends TestCase
         $this->commandTester->execute(
             [
                 'class'     => EmptyClass::class,
-                'converter' => \DateTime::class,
+                'converter' => DateTime::class,
             ]
         );
     }

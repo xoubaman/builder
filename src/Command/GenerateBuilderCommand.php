@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Command;
 
+use InvalidArgumentException;
 use Roave\BetterReflection\Reflection\ReflectionClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,12 +22,15 @@ class GenerateBuilderCommand extends Command
 
     /** @var BuilderGenerator */
     private $generator;
+    /** @var Writer */
+    private $writer;
 
-    public function __construct(BuilderGenerator $generator)
+    public function __construct(BuilderGenerator $generator, Writer $writer)
     {
         parent::__construct();
 
         $this->generator = $generator;
+        $this->writer = $writer;
     }
 
     protected function configure(): void
@@ -56,7 +60,7 @@ class GenerateBuilderCommand extends Command
         $converter       = $this->getConverter($input);
         $builderContent  = $this->generator->forClassWithConverter($class, $converter);
         $destinationPath = $this->getPathFromOriginalClass($class);
-        $this->createBuilderFile($destinationPath, $builderContent);
+        $this->writer->writeIn($destinationPath, $builderContent);
         $output->writeln(sprintf("Builder class created in '%s'", $destinationPath));
 
         return 1;
@@ -67,7 +71,7 @@ class GenerateBuilderCommand extends Command
         $class = $input->getArgument(self::ARG_CLASS);
 
         if (!is_string($class)) {
-            throw new \InvalidArgumentException('Cannot read classname from input');
+            throw new InvalidArgumentException('Cannot read classname from input');
         }
 
         return $class;
@@ -83,17 +87,6 @@ class GenerateBuilderCommand extends Command
         return $dir . DIRECTORY_SEPARATOR . $builderClassname;
     }
 
-    private function createBuilderFile($path, string $builderContent): void
-    {
-        if (file_exists($path)) {
-            throw FileAlreadyExists::inPath($path);
-        }
-
-        if (file_put_contents($path, $builderContent) === false) {
-            throw new \RuntimeException(sprintf('Failed to create file %s', $path));
-        };
-    }
-
     private function getConverter(InputInterface $input): Converter
     {
         $converterClass = $input->getArgument(self::ARG_CONVERTER) ?? DefaultConverter::class;
@@ -101,7 +94,7 @@ class GenerateBuilderCommand extends Command
         $converter = new $converterClass;
 
         if (!$converter instanceof Converter) {
-            throw new \InvalidArgumentException('Converter parameter is not a Converter implementation');
+            throw new InvalidArgumentException('Converter parameter is not a Converter implementation');
         }
 
         return $converter;
