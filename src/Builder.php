@@ -13,6 +13,11 @@ abstract class Builder
     protected const CLASS_TO_BUILD = '';
 
     /**
+     * Method to call for instantiation, leave empty to use regular constructor
+     */
+    protected const USE_CONSTRUCTOR = '';
+
+    /**
      * Array holding a method name to be called after instantiation
      * First element will be used as the method name, subsequent elements as
      * parameters when calling it
@@ -60,10 +65,8 @@ abstract class Builder
      */
     private function newInstanceWithSetup(array $setup)
     {
-        $class = static::CLASS_TO_BUILD;
-
         $setupToParam = array_map(
-            function ($param) {
+            static function ($param) {
                 if (is_callable($param)) {
                     return $param();
                 }
@@ -73,11 +76,17 @@ abstract class Builder
             $setup
         );
 
-        if (empty($class)) {
+        if (empty(static::CLASS_TO_BUILD)) {
             return $setupToParam;
         }
 
-        return new $class(...array_values($setupToParam));
+        $class = static::CLASS_TO_BUILD;
+
+        if (empty(static::USE_CONSTRUCTOR)) {
+            return new $class(...array_values($setupToParam));
+        }
+
+        return call_user_func_array([$class, static::USE_CONSTRUCTOR], array_values($setupToParam));
     }
 
     /**

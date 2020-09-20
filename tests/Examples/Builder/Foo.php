@@ -16,6 +16,8 @@ class Foo
 
     /** @var string */
     public $afterBuildMethodParameter;
+    /** @var bool */
+    private $byCustomConstructor;
 
     public function __construct(string $param1, string $param2, int $param3)
     {
@@ -24,6 +26,16 @@ class Foo
         $this->param3 = $param3;
 
         $this->afterBuildMethodParameter = self::DEFAULT_AFTER_BUILD_METHOD_PARAM;
+
+        $this->byCustomConstructor = false;
+    }
+
+    public function customConstructor(string $param1, string $param2, int $param3): self
+    {
+        $instance = new self($param1, $param2, $param3);
+        $instance->byCustomConstructor = true;
+
+        return $instance;
     }
 
     public function afterBuildMethod(string $param): void
@@ -34,5 +46,10 @@ class Foo
     public function afterBuildMethodCalleParam(): string
     {
         return $this->afterBuildMethodParameter;
+    }
+
+    public function instantiatedByCustomConstructor(): bool
+    {
+        return $this->byCustomConstructor;
     }
 }
