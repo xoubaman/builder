@@ -20,7 +20,7 @@ abstract class Builder
     protected const AFTER_BUILD_CALL = [];
 
     /** @var array<mixed> */
-    protected $lastBuilt = [];
+    protected $lastSetup = [];
     /** @var array<mixed> */
     protected $current = [];
     /** @var array<mixed> */
@@ -30,8 +30,8 @@ abstract class Builder
     public function build()
     {
         $this->initCurrentIfNotYet();
-        $instance        = $this->newInstanceWithParameters($this->current);
-        $this->lastBuilt = $this->current;
+        $instance        = $this->newInstanceWithSetup($this->current);
+        $this->lastSetup = $this->current;
         $this->current   = [];
 
         if (!empty(static::AFTER_BUILD_CALL) && is_object($instance)) {
@@ -44,29 +44,40 @@ abstract class Builder
     /** @return mixed */
     public function cloneLast()
     {
-        return $this->newInstanceWithParameters($this->lastBuilt);
+        return $this->newInstanceWithSetup($this->lastSetup);
     }
 
     public function repeatLastSetup(): self
     {
-        $this->current = $this->lastBuilt;
+        $this->current = $this->lastSetup;
 
         return $this;
     }
 
     /**
-     * @param array<mixed> $data
+     * @param array<mixed> $setup
      * @return mixed
      */
-    private function newInstanceWithParameters(array $data)
+    private function newInstanceWithSetup(array $setup)
     {
         $class = static::CLASS_TO_BUILD;
 
+        $setupToParam = array_map(
+            function ($param) {
+                if (is_callable($param)) {
+                    return $param();
+                }
+
+                return $param;
+            },
+            $setup
+        );
+
         if (empty($class)) {
-            return $data;
+            return $setupToParam;
         }
 
-        return new $class(...array_values($data));
+        return new $class(...array_values($setupToParam));
     }
 
     /**
