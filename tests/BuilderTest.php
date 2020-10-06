@@ -6,6 +6,7 @@ namespace Xoubaman\Builder\Tests;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\Foo;
 use Xoubaman\Builder\Tests\Examples\Builder\FooBuilder;
+use Xoubaman\Builder\Tests\Examples\Builder\NoSettersFooBuilder;
 
 class BuilderTest extends TestCase
 {
@@ -79,6 +80,7 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
+    /** @test */
     public function last_setup_can_be_recovered_after_building(): void
     {
         $firstInstance = $this->builder->withParam1('Luke')

@@ -138,7 +138,6 @@ abstract class Builder
     }
 
     /**
-     * @param object $instance
      * @param array<mixed> $callbackParameters
      * @return object
      */
@@ -149,4 +148,20 @@ abstract class Builder
 
         return $instance;
     }
+
+    public function __call($name, $arguments): self
+    {
+        $this->initCurrentIfNotYet();
+        $methodWithoutPrefix = mb_substr($name, mb_strlen('with'));
+        $paramName          = lcfirst($methodWithoutPrefix);
+
+        if (!array_key_exists($paramName, $this->current)) {
+            throw new \OutOfBoundsException(sprintf('There is no key %s defined in current build setup', $paramName));
+        }
+
+        $this->addToCurrent($paramName, $arguments[0]);
+
+        return $this;
+    }
+
 }
