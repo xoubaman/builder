@@ -5,6 +5,7 @@ namespace Xoubaman\Builder\Tests\Command;
 
 use DateTime;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -34,14 +35,14 @@ class GenerateBuilderCommandTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function fails_when_no_classname_passed_as_parameter(): void
     {
         $this->expectException(RuntimeException::class);
         $this->commandTester->execute([]);
     }
 
-    /** @test */
+    #[Test]
     public function fails_when_provided_classname_is_not_just_a_classname(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -55,7 +56,7 @@ class GenerateBuilderCommandTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function creates_a_builder_when_called_with_a_classname(): void
     {
         $this->commandTester->execute(['class' => EmptyClass::class]);
@@ -65,7 +66,7 @@ class GenerateBuilderCommandTest extends TestCase
         self::assertNotEmpty($this->writer->contentWrittenInPath($expectedBuilderPath));
     }
 
-    /** @test */
+    #[Test]
     public function fails_when_builder_file_already_exists(): void
     {
         $this->writer->writeIn(
@@ -76,7 +77,7 @@ class GenerateBuilderCommandTest extends TestCase
         $this->commandTester->execute(['class' => AlreadyHasOne::class]);
     }
 
-    /** @test */
+    #[Test]
     public function uses_concrete_converter_when_provided(): void
     {
         $this->commandTester->execute(
@@ -92,7 +93,7 @@ class GenerateBuilderCommandTest extends TestCase
         self::assertEquals($expectedContent, $generatedBuilderContent);
     }
 
-    /** @test */
+    #[Test]
     public function fails_when_provided_converter_is_not_a_converter(): void
     {
         $this->expectException(InvalidArgumentException::class);

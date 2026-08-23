@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\Foo;
 use Xoubaman\Builder\Tests\Examples\Builder\FooBuilder;
@@ -22,7 +23,7 @@ class CallAfterBuildBuilderTest extends TestCase
         $this->builderWithoutCall = new FooBuilder();
     }
 
-    /** @test */
+    #[Test]
     public function it_calls_method_after_build_when_defined(): void
     {
         $withoutCall = $this->builderWithoutCall->build();

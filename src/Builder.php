@@ -25,14 +25,13 @@ abstract class Builder
     protected const AFTER_BUILD_CALL = [];
 
     /** @var array<mixed> */
-    protected $lastSetup = [];
+    protected array $lastSetup = [];
     /** @var array<mixed> */
-    protected $current = [];
+    protected array $current = [];
     /** @var array<mixed> */
-    protected $base = [];
+    protected array $base = [];
 
-    /** @return mixed */
-    public function build()
+    public function build(): mixed
     {
         $this->initCurrentIfNotYet();
         $instance        = $this->newInstanceWithSetup($this->current);
@@ -46,8 +45,7 @@ abstract class Builder
         return $instance;
     }
 
-    /** @return mixed */
-    public function cloneLast()
+    public function cloneLast(): mixed
     {
         return $this->newInstanceWithSetup($this->lastSetup);
     }
@@ -61,18 +59,11 @@ abstract class Builder
 
     /**
      * @param array<mixed> $setup
-     * @return mixed
      */
-    private function newInstanceWithSetup(array $setup)
+    private function newInstanceWithSetup(array $setup): mixed
     {
         $setupToParam = array_map(
-            static function ($param) {
-                if (is_callable($param)) {
-                    return $param();
-                }
-
-                return $param;
-            },
+            static fn($param) => is_callable($param) ? $param() : $param,
             $setup
         );
 
@@ -89,11 +80,7 @@ abstract class Builder
         return call_user_func_array([$class, static::USE_CONSTRUCTOR], array_values($setupToParam));
     }
 
-    /**
-     * @param mixed $value
-     * @return static
-     */
-    final protected function addToCurrent(string $field, $value)
+    final protected function addToCurrent(string $field, mixed $value): static
     {
         $this->initCurrentIfNotYet();
         $this->current[$field] = $value;
@@ -101,8 +88,7 @@ abstract class Builder
         return $this;
     }
 
-    /** @return static */
-    final protected function removeFromCurrent(string $field)
+    final protected function removeFromCurrent(string $field): static
     {
         $this->initCurrentIfNotYet();
 
@@ -111,7 +97,9 @@ abstract class Builder
         return $this;
     }
 
-    /** @return array<mixed> */
+    /**
+     * @return array<mixed>
+     */
     final protected function currentSetup(): array
     {
         $this->initCurrentIfNotYet();
@@ -121,9 +109,8 @@ abstract class Builder
 
     /**
      * @param array<mixed> $setup
-     * @return static
      */
-    final protected function replaceCurrentSetup(array $setup)
+    final protected function replaceCurrentSetup(array $setup): static
     {
         $this->current = $setup;
 
@@ -139,7 +126,6 @@ abstract class Builder
 
     /**
      * @param array<mixed> $callbackParameters
-     * @return object
      */
     private function doCallAfterBuild(object $instance, array $callbackParameters): object
     {
@@ -149,7 +135,10 @@ abstract class Builder
         return $instance;
     }
 
-    public function __call($name, $arguments): self
+    /**
+     * @param array<mixed> $arguments
+     */
+    public function __call(string $name, array $arguments): self
     {
         $this->initCurrentIfNotYet();
         $methodWithoutPrefix = mb_substr($name, mb_strlen('with'));
@@ -163,5 +152,4 @@ abstract class Builder
 
         return $this;
     }
-
 }

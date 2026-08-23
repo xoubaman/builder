@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\ArrayBuilder;
 
@@ -17,7 +18,7 @@ class ArrayBuilderTest extends TestCase
         $this->arrayBuilder = new ArrayBuilder();
     }
 
-    /** @test */
+    #[Test]
     public function builds_array_instead_of_instance_when_no_class_defined(): void
     {
         $arrayBuilt = $this->arrayBuilder->build();
@@ -30,7 +31,7 @@ class ArrayBuilderTest extends TestCase
         self::assertEquals($expected, $arrayBuilt);
     }
 
-    /** @test */
+    #[Test]
     public function build_without_base_elements_when_removing_them(): void
     {
         $arrayBuilt = $this->arrayBuilder->withoutParam1()
@@ -43,7 +44,7 @@ class ArrayBuilderTest extends TestCase
         self::assertEquals($expected, $arrayBuilt);
     }
 
-    /** @test */
+    #[Test]
     public function is_able_to_build_when_modifying_nested_data(): void
     {
         $arrayBuilt = $this->arrayBuilder

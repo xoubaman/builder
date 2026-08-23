@@ -5,20 +5,13 @@ namespace Xoubaman\Builder\Generator\ClassMetadata;
 
 final class ClassMetadata
 {
-    /** @var string */
-    private $className;
-    /** @var string */
-    private $namespace;
-    /** @var ArgumentCollection */
-    private $arguments;
+    private readonly ArgumentCollection $arguments;
 
     public function __construct(
-        string $className,
-        string $namespace,
+        private readonly string $className,
+        private readonly string $namespace,
         Argument ...$constructorArguments
     ) {
-        $this->className = $className;
-        $this->namespace = $namespace;
         $this->arguments = new ArgumentCollection(...$constructorArguments);
     }
 

@@ -30,26 +30,19 @@ final class BuilderGenerator
         );
     }
 
-    /** @return array<Argument> */
+    /**
+     * @return array<Argument>
+     */
     private function getConstructorArguments(ReflectionClass $reflection): array
     {
-        $constructorParameters = $reflection->getConstructor()->getParameters();
+        $constructorParameters = $reflection->getConstructor()?->getParameters() ?? [];
 
         return array_map(
-            $this->argumentFromReflectionParameterClosure(),
-            $constructorParameters,
-            []
+            fn(ReflectionParameter $parameter): Argument => new Argument(
+                $parameter->getName(),
+                $parameter->getType() instanceof ReflectionType ? $parameter->getType()->__toString() : 'null'
+            ),
+            $constructorParameters
         );
-    }
-
-    private function argumentFromReflectionParameterClosure(): \Closure
-    {
-        return function (ReflectionParameter $parameter): Argument {
-            $type = $parameter->getType() instanceof ReflectionType ?
-                $parameter->getType()->__toString()
-                : 'null';
-
-            return new Argument($parameter->getName(), $type);
-        };
     }
 }

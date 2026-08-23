@@ -20,17 +20,11 @@ class GenerateBuilderCommand extends Command
     private const ARG_CLASS = 'class';
     private const ARG_CONVERTER = 'converter';
 
-    /** @var BuilderGenerator */
-    private $generator;
-    /** @var Writer */
-    private $writer;
-
-    public function __construct(BuilderGenerator $generator, Writer $writer)
-    {
+    public function __construct(
+        private readonly BuilderGenerator $generator,
+        private readonly Writer $writer
+    ) {
         parent::__construct();
-
-        $this->generator = $generator;
-        $this->writer = $writer;
     }
 
     protected function configure(): void

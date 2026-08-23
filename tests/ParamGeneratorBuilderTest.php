@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\Foo;
 use Xoubaman\Builder\Tests\Examples\Builder\FooBuilder;
@@ -19,7 +20,7 @@ class ParamGeneratorBuilderTest extends TestCase
         $this->builder = new FooBuilderWithParamGenerators();
     }
 
-    /** @test */
+    #[Test]
     public function builds_base_setup_when_called_without_setting_any_parameter(): void
     {
         $instance = $this->builder->build();

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\CustomConstructorFooBuilder;
 use Xoubaman\Builder\Tests\Examples\Builder\FooBuilder;
@@ -21,7 +22,7 @@ class CustomConstructorBuilderTest extends TestCase
         $this->withoutCustomConstructor = new FooBuilder();
     }
 
-    /** @test */
+    #[Test]
     public function uses_custom_constructor_when_defined(): void
     {
         $byRegularConstructor = $this->withoutCustomConstructor->build();

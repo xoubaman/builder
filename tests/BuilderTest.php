@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\Foo;
 use Xoubaman\Builder\Tests\Examples\Builder\FooBuilder;
@@ -19,7 +20,7 @@ class BuilderTest extends TestCase
         $this->builder = new FooBuilder();
     }
 
-    /** @test */
+    #[Test]
     public function builds_base_setup_when_called_without_setting_any_parameter(): void
     {
         $instance = $this->builder->build();
@@ -33,7 +34,7 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    /** @test */
+    #[Test]
     public function builds_configured_setup_when_setting_parameters(): void
     {
         $instance = $this->builder->withParam1('Luke')
@@ -46,7 +47,7 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    /** @test */
+    #[Test]
     public function builds_base_setup_when_building_after_a_previous_customized_setup_build(): void
     {
         $this->builder->withParam1('Luke')
@@ -65,7 +66,7 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    /** @test */
+    #[Test]
     public function builds_last_setup_when_cloning(): void
     {
         $this->builder->withParam1('Luke')
@@ -80,7 +81,7 @@ class BuilderTest extends TestCase
         self::assertEquals($expected, $instance);
     }
 
-    /** @test */
+    #[Test]
     public function last_setup_can_be_recovered_after_building(): void
     {
         $firstInstance = $this->builder->withParam1('Luke')
@@ -93,7 +94,7 @@ class BuilderTest extends TestCase
         self::assertEquals($firstInstance, $secondInstance);
     }
 
-    /** @test */
+    #[Test]
     public function current_setup_is_not_affected_when_cloning(): void
     {
         $this->builder->withParam1('Luke')

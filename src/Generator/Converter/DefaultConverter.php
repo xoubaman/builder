@@ -66,11 +66,13 @@ TPL;
         );
     }
 
-    /** @param array<string> $array */
-    private function toIndentedCode(array $array, int $indentantionLevels): string
+    /**
+     * @param array<string> $array
+     */
+    private function toIndentedCode(array $array, int $indentationLevels): string
     {
-        $indentation = str_repeat('    ', $indentantionLevels);
+        $indentation = str_repeat('    ', $indentationLevels);
 
-        return trim(implode(PHP_EOL.$indentation, $array));
+        return trim(implode(PHP_EOL . $indentation, $array));
     }
 }

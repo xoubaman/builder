@@ -19,17 +19,12 @@ final class Argument
         'callable' => 'function(){}',
     ];
 
-    /** @var string */
-    private $name;
-    /** @var string */
-    private $type;
-    /** @var string */
-    private $default;
+    private readonly string $default;
 
-    public function __construct(string $name, string $type)
-    {
-        $this->name    = $name;
-        $this->type    = $type;
+    public function __construct(
+        private readonly string $name,
+        private readonly string $type
+    ) {
         $this->default = self::DEFAULTS[$type] ?? 'null';
     }
 

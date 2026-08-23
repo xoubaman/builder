@@ -6,15 +6,14 @@ namespace Xoubaman\Builder\Generator\ClassMetadata;
 final class ArgumentCollection
 {
     /** @var array<Argument> */
-    private $arguments;
+    private readonly array $arguments;
 
     public function __construct(Argument ...$arguments)
     {
         $this->arguments = $arguments;
     }
 
-    /** @return mixed */
-    public function mapWith(callable $callable)
+    public function mapWith(callable $callable): mixed
     {
         return array_map($callable, $this->arguments);
     }

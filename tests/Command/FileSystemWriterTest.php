@@ -6,6 +6,7 @@ namespace Xoubaman\Builder\Tests\Command;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\vfsStreamFile;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Command\FileAlreadyExists;
 use Xoubaman\Builder\Command\FileSystemWriter;
@@ -34,7 +35,7 @@ class FileSystemWriterTest extends TestCase
         $this->fileSystemWriter = new FileSystemWriter();
     }
 
-    /** @test */
+    #[Test]
     public function creates_file_with_content_when_file_does_not_exist(): void
     {
         $file = vfsStream::url(self::FILE_PATH);
@@ -45,7 +46,7 @@ class FileSystemWriterTest extends TestCase
         self::assertEquals(self::FILE_CONTENT, $urlToFile->getContent());
     }
 
-    /** @test */
+    #[Test]
     public function fails_when_file_exist(): void
     {
         $this->expectException(FileAlreadyExists::class);
