@@ -26,9 +26,9 @@ class CallAfterBuildBuilderTest extends TestCase
     public function it_calls_method_after_build_when_defined(): void
     {
         $withoutCall = $this->builderWithoutCall->build();
-        self::assertEquals(Foo::DEFAULT_AFTER_BUILD_METHOD_PARAM, $withoutCall->afterBuildMethodCalleParam());
+        self::assertEquals(Foo::DEFAULT_AFTER_BUILD_METHOD_PARAM, $withoutCall->afterBuildMethodCallParam());
 
         $withCallback = $this->builderWithCall->build();
-        self::assertEquals(FooBuilderWithCallback::AFTER_BUILD_PARAM, $withCallback->afterBuildMethodCalleParam());
+        self::assertEquals(FooBuilderWithCallback::AFTER_BUILD_PARAM, $withCallback->afterBuildMethodCallParam());
     }
 }

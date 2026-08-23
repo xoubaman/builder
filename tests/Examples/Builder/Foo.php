@@ -30,7 +30,7 @@ class Foo
         $this->byCustomConstructor = false;
     }
 
-    public function customConstructor(string $param1, string $param2, int $param3): self
+    public static function customConstructor(string $param1, string $param2, int $param3): self
     {
         $instance = new self($param1, $param2, $param3);
         $instance->byCustomConstructor = true;
@@ -43,7 +43,7 @@ class Foo
         $this->afterBuildMethodParameter = $param;
     }
 
-    public function afterBuildMethodCalleParam(): string
+    public function afterBuildMethodCallParam(): string
     {
         return $this->afterBuildMethodParameter;
     }
