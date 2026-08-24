@@ -20,7 +20,7 @@ final class FooBuilderWithParamGenerators extends Builder
     public function __construct()
     {
         $this->base = [
-            self::PARAM_1 => function (): string {
+            self::PARAM_1 => static function (): string {
                 return self::PARAM_1_VALUE;
             },
             self::PARAM_2 => [$this, 'getParam2Value'],

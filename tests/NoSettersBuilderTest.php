@@ -6,7 +6,7 @@ namespace Xoubaman\Builder\Tests;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\Foo;
-use Xoubaman\Builder\Tests\Examples\Builder\FooBuilder;
+
 use Xoubaman\Builder\Tests\Examples\Builder\NoSettersFooBuilder;
 
 class NoSettersBuilderTest extends TestCase

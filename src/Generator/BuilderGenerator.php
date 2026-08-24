@@ -38,7 +38,7 @@ final class BuilderGenerator
         $constructorParameters = $reflection->getConstructor()?->getParameters() ?? [];
 
         return array_map(
-            fn(ReflectionParameter $parameter): Argument => new Argument(
+            static fn(ReflectionParameter $parameter): Argument => new Argument(
                 $parameter->getName(),
                 $parameter->getType() instanceof ReflectionType ? $parameter->getType()->__toString() : 'null'
             ),
