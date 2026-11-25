@@ -13,14 +13,15 @@
         }
     ],
     "require": {
-        "php": "^8.3.2 || ^8.4.1 || ^8.5.0",
+        "php": "^8.3",
+        "ext-mbstring": "*",
         "roave/better-reflection": "^6.69",
-        "symfony/console": "^6.0 || ^7.0"
+        "symfony/console": "^6.4 || ^7.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
         "phpunit/phpunit": "^11.5",
-        "mikey179/vfsstream": "^1.6",
+        "mikey179/vfsstream": "^1.6.12",
         "carthage-software/mago": "^1.47.2"
     },
     "autoload": {
