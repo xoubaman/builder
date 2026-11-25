@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Command;
@@ -32,27 +33,21 @@ class GenerateBuilderCommand extends Command
         $this
             ->setName(self::NAME)
             ->setDescription('Creates a builder for a given class')
-            ->setDefinition(
-                [
-                    new InputArgument(
-                        self::ARG_CLASS,
-                        InputArgument::REQUIRED,
-                        'Class FQN to generate the builder from'
-                    ),
-                    new InputArgument(
-                        self::ARG_CONVERTER,
-                        InputArgument::OPTIONAL,
-                        'A converter FQN to generate the builder'
-                    ),
-                ]
-            );
+            ->setDefinition([
+                new InputArgument(self::ARG_CLASS, InputArgument::REQUIRED, 'Class FQN to generate the builder from'),
+                new InputArgument(
+                    self::ARG_CONVERTER,
+                    InputArgument::OPTIONAL,
+                    'A converter FQN to generate the builder'
+                )
+            ]);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $class           = $this->getClassFromInput($input);
-        $converter       = $this->getConverter($input);
-        $builderContent  = $this->generator->forClassWithConverter($class, $converter);
+        $class = $this->getClassFromInput($input);
+        $converter = $this->getConverter($input);
+        $builderContent = $this->generator->forClassWithConverter($class, $converter);
         $destinationPath = $this->getPathFromOriginalClass($class);
         $this->writer->writeIn($destinationPath, $builderContent);
         $output->writeln(sprintf("Builder class created in '%s'", $destinationPath));
@@ -73,9 +68,9 @@ class GenerateBuilderCommand extends Command
 
     private function getPathFromOriginalClass(string $class): string
     {
-        $reflector        = ReflectionClass::createFromName($class);
-        $file             = (string)$reflector->getFileName();
-        $dir              = dirname($file);
+        $reflector = ReflectionClass::createFromName($class);
+        $file = (string) $reflector->getFileName();
+        $dir = dirname($file);
         $builderClassname = $reflector->getShortName() . 'Builder.php';
 
         return $dir . DIRECTORY_SEPARATOR . $builderClassname;
@@ -85,7 +80,7 @@ class GenerateBuilderCommand extends Command
     {
         $converterClass = $input->getArgument(self::ARG_CONVERTER) ?? DefaultConverter::class;
 
-        $converter = new $converterClass;
+        $converter = new $converterClass();
 
         if (!$converter instanceof Converter) {
             throw new InvalidArgumentException('Converter parameter is not a Converter implementation');

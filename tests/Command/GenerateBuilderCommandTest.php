@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests\Command;
@@ -26,13 +27,8 @@ class GenerateBuilderCommandTest extends TestCase
     {
         parent::setUp();
 
-        $this->writer        = new InMemoryWriter();
-        $this->commandTester = new CommandTester(
-            new GenerateBuilderCommand(
-                new BuilderGenerator(),
-                $this->writer
-            )
-        );
+        $this->writer = new InMemoryWriter();
+        $this->commandTester = new CommandTester(new GenerateBuilderCommand(new BuilderGenerator(), $this->writer));
     }
 
     #[Test]
@@ -46,14 +42,12 @@ class GenerateBuilderCommandTest extends TestCase
     public function fails_when_provided_classname_is_not_just_a_classname(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->commandTester->execute(
-            [
-                'class' => [
-                    AlreadyHasOne::class,
-                    AlreadyHasOne::class,
-                ],
+        $this->commandTester->execute([
+            'class' => [
+                AlreadyHasOne::class,
+                AlreadyHasOne::class
             ]
-        );
+        ]);
     }
 
     #[Test]
@@ -80,16 +74,14 @@ class GenerateBuilderCommandTest extends TestCase
     #[Test]
     public function uses_concrete_converter_when_provided(): void
     {
-        $this->commandTester->execute(
-            [
-                'class'     => EmptyClass::class,
-                'converter' => VanilaConverter::class,
-            ]
-        );
+        $this->commandTester->execute([
+            'class' => EmptyClass::class,
+            'converter' => VanilaConverter::class
+        ]);
 
-        $path                    = $this->buildPathToExampleFilesFor('EmptyClassBuilder.php');
+        $path = $this->buildPathToExampleFilesFor('EmptyClassBuilder.php');
         $generatedBuilderContent = $this->writer->contentWrittenInPath($path);
-        $expectedContent         = VanilaConverter::OUTPUT;
+        $expectedContent = VanilaConverter::OUTPUT;
         self::assertEquals($expectedContent, $generatedBuilderContent);
     }
 
@@ -97,12 +89,10 @@ class GenerateBuilderCommandTest extends TestCase
     public function fails_when_provided_converter_is_not_a_converter(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->commandTester->execute(
-            [
-                'class'     => EmptyClass::class,
-                'converter' => DateTime::class,
-            ]
-        );
+        $this->commandTester->execute([
+            'class' => EmptyClass::class,
+            'converter' => DateTime::class
+        ]);
     }
 
     private function buildPathToExampleFilesFor(string $filename): string

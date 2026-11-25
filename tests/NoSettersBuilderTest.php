@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
@@ -6,7 +7,6 @@ namespace Xoubaman\Builder\Tests;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\Foo;
-
 use Xoubaman\Builder\Tests\Examples\Builder\NoSettersFooBuilder;
 
 class NoSettersBuilderTest extends TestCase
@@ -23,11 +23,7 @@ class NoSettersBuilderTest extends TestCase
     #[Test]
     public function current_setup_is_changed_when_calling_magic_methods(): void
     {
-        $instance = $this->builder
-            ->withParam1('a kind')
-            ->withParam2('of magic')
-            ->withParam3(10)
-            ->build();
+        $instance = $this->builder->withParam1('a kind')->withParam2('of magic')->withParam3(10)->build();
 
         $expected = new Foo('a kind', 'of magic', 10);
 
@@ -38,8 +34,6 @@ class NoSettersBuilderTest extends TestCase
     public function fails_when_calling_magic_method_with_no_matching_key_in_current_setup(): void
     {
         $this->expectException(\OutOfBoundsException::class);
-        $this->builder
-            ->withRaccoon('this will fail')
-            ->build();
+        $this->builder->withRaccoon('this will fail')->build();
     }
 }

@@ -2,7 +2,7 @@
 # Welcome to Mago!
 # For full documentation, see https://mago.carthage.software/1.47.3/en/tools/overview/
 version = "1"
-php-version = "8.3.2"
+php-version = "8.3.0"
 
 [source]
 workspace = "."
@@ -15,6 +15,8 @@ literal-separator = true
 
 [formatter]
 preset = "psr-12"
+# Expected output of the builder generator, must match it byte by byte
+excludes = ["tests/Examples/Generator/SampleClassBuilder.php"]
 
 [linter]
 integrations = ["symfony", "phpunit"]
@@ -23,6 +25,8 @@ integrations = ["symfony", "phpunit"]
 ambiguous-function-call = { enabled = false }
 literal-named-argument = { enabled = false }
 halstead = { effort-threshold = 5000 }
+# Builders override build()/cloneLast() only to narrow the return type
+no-redundant-method-override = { enabled = false }
 
 [analyzer]
 plugins = []
@@ -30,7 +34,6 @@ find-unused-definitions = true
 find-unused-expressions = true
 analyze-dead-code = false
 memoize-properties = true
-allow-possibly-undefined-array-keys = false
 check-throws = true
 unchecked-exceptions = ["Error", "LogicException"]
 unchecked-exception-classes = []

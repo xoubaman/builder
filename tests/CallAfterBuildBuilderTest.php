@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
@@ -19,7 +20,7 @@ class CallAfterBuildBuilderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->builderWithCall    = new FooBuilderWithCallback();
+        $this->builderWithCall = new FooBuilderWithCallback();
         $this->builderWithoutCall = new FooBuilder();
     }
 

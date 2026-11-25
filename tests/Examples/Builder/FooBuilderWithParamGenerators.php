@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests\Examples\Builder;
@@ -20,9 +21,7 @@ final class FooBuilderWithParamGenerators extends Builder
     public function __construct()
     {
         $this->base = [
-            self::PARAM_1 => static function (): string {
-                return self::PARAM_1_VALUE;
-            },
+            self::PARAM_1 => static fn(): string => self::PARAM_1_VALUE,
             self::PARAM_2 => [$this, 'getParam2Value'],
             self::PARAM_3 => new class {
                 private $count = 0;
@@ -33,7 +32,7 @@ final class FooBuilderWithParamGenerators extends Builder
 
                     return $this->count;
                 }
-            },
+            }
         ];
     }
 

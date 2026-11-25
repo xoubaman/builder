@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder;
@@ -34,11 +35,11 @@ abstract class Builder
     public function build(): mixed
     {
         $this->initCurrentIfNotYet();
-        $instance        = $this->newInstanceWithSetup($this->current);
+        $instance = $this->newInstanceWithSetup($this->current);
         $this->lastSetup = $this->current;
-        $this->current   = [];
+        $this->current = [];
 
-        if (!empty(static::AFTER_BUILD_CALL) && is_object($instance)) {
+        if (static::AFTER_BUILD_CALL !== [] && is_object($instance)) {
             $instance = $this->doCallAfterBuild($instance, static::AFTER_BUILD_CALL);
         }
 
@@ -62,18 +63,15 @@ abstract class Builder
      */
     private function newInstanceWithSetup(array $setup): mixed
     {
-        $setupToParam = array_map(
-            static fn($param) => is_callable($param) ? $param() : $param,
-            $setup
-        );
+        $setupToParam = array_map(static fn($param) => is_callable($param) ? $param() : $param, $setup);
 
-        if (empty(static::CLASS_TO_BUILD)) {
+        if (static::CLASS_TO_BUILD === '') {
             return $setupToParam;
         }
 
         $class = static::CLASS_TO_BUILD;
 
-        if (empty(static::USE_CONSTRUCTOR)) {
+        if (static::USE_CONSTRUCTOR === '') {
             return new $class(...array_values($setupToParam));
         }
 
@@ -119,7 +117,7 @@ abstract class Builder
 
     final protected function initCurrentIfNotYet(): void
     {
-        if (empty($this->current)) {
+        if ($this->current === []) {
             $this->current = $this->base;
         }
     }
@@ -142,7 +140,7 @@ abstract class Builder
     {
         $this->initCurrentIfNotYet();
         $methodWithoutPrefix = mb_substr($name, mb_strlen('with'));
-        $paramName          = lcfirst($methodWithoutPrefix);
+        $paramName = lcfirst($methodWithoutPrefix);
 
         if (!array_key_exists($paramName, $this->current)) {
             throw new \OutOfBoundsException(sprintf('There is no key %s defined in current build setup', $paramName));

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests\Examples\Builder;
@@ -23,7 +24,7 @@ final class CustomConstructorFooBuilder extends Builder
         $this->base = [
             self::PARAM_1 => self::PARAM_1_VALUE,
             self::PARAM_2 => self::PARAM_2_VALUE,
-            self::PARAM_3 => self::PARAM_3_VALUE,
+            self::PARAM_3 => self::PARAM_3_VALUE
         ];
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Generator\ClassMetadata;
@@ -10,13 +11,13 @@ final class Argument
     use TemplateReplacement;
 
     private const DEFAULTS = [
-        'string'   => "'some string'",
-        'bool'     => 'true',
-        'int'      => '0',
-        'float'    => '0.0',
-        'null'     => 'null',
-        'array'    => '[]',
-        'callable' => 'function(){}',
+        'string' => "'some string'",
+        'bool' => 'true',
+        'int' => '0',
+        'float' => '0.0',
+        'null' => 'null',
+        'array' => '[]',
+        'callable' => 'function(){}'
     ];
 
     private readonly string $default;
@@ -45,7 +46,7 @@ final class Argument
 
     public function constantName(): string
     {
-        $snakeCase = (string)preg_replace('/(?<!^)[A-Z]/', '_$0', $this->name);
+        $snakeCase = (string) preg_replace('/(?<!^)[A-Z]/', '_$0', $this->name);
 
         return strtoupper($snakeCase);
     }

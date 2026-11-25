@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests\Command;
@@ -13,10 +14,10 @@ use Xoubaman\Builder\Command\FileSystemWriter;
 
 class FileSystemWriterTest extends TestCase
 {
-    private const FILE_PATH               = 'root/the-file.php';
-    private const EXISTING_FILE_NAME      = 'i-already-exist.php';
+    private const FILE_PATH = 'root/the-file.php';
+    private const EXISTING_FILE_NAME = 'i-already-exist.php';
     private const FILE_PATH_EXISTING_FILE = 'root/i-already-exist.php';
-    private const FILE_CONTENT            = 'weasel weasel';
+    private const FILE_CONTENT = 'weasel weasel';
 
     /** @var vfsStreamDirectory */
     private $root;
@@ -28,9 +29,7 @@ class FileSystemWriterTest extends TestCase
         parent::setUp();
 
         $this->root = vfsStream::setup('root');
-        vfsStream::newFile(self::EXISTING_FILE_NAME)
-                 ->withContent('you cannot overwrite me')
-                 ->at($this->root);
+        vfsStream::newFile(self::EXISTING_FILE_NAME)->withContent('you cannot overwrite me')->at($this->root);
 
         $this->fileSystemWriter = new FileSystemWriter();
     }

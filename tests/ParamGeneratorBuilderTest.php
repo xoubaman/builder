@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
@@ -6,7 +7,6 @@ namespace Xoubaman\Builder\Tests;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Xoubaman\Builder\Tests\Examples\Builder\Foo;
-
 use Xoubaman\Builder\Tests\Examples\Builder\FooBuilderWithParamGenerators;
 
 class ParamGeneratorBuilderTest extends TestCase

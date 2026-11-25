@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Generator;
@@ -20,7 +21,7 @@ final class BuilderGenerator
 
     private function getClassMetadata(string $class): ClassMetadata
     {
-        $reflection           = ReflectionClass::createFromName($class);
+        $reflection = ReflectionClass::createFromName($class);
         $constructorArguments = $this->getConstructorArguments($reflection);
 
         return new ClassMetadata(

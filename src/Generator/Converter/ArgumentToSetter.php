@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Generator\Converter;
@@ -13,21 +14,18 @@ final class ArgumentToSetter
     public function __invoke(Argument $argument): string
     {
         $template = <<<TPL
-public function with[U_NAME]([TYPE] $[NAME]): self
-    {
-        return \$this->addToCurrent(self::[CONSTANT], $[NAME]);
-    }
+            public function with[U_NAME]([TYPE] $[NAME]): self
+                {
+                    return \$this->addToCurrent(self::[CONSTANT], $[NAME]);
+                }
 
-TPL;
+            TPL;
 
-        return $this->replaceInTemplate(
-            $template,
-            [
-                '[U_NAME]'   => ucfirst($argument->name()),
-                '[TYPE]'     => $argument->type(),
-                '[NAME]'     => $argument->name(),
-                '[CONSTANT]' => $argument->constantName(),
-            ]
-        );
+        return $this->replaceInTemplate($template, [
+            '[U_NAME]' => ucfirst($argument->name()),
+            '[TYPE]' => $argument->type(),
+            '[NAME]' => $argument->name(),
+            '[CONSTANT]' => $argument->constantName()
+        ]);
     }
 }

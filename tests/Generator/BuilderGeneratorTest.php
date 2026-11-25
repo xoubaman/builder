@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests\Generator;
@@ -15,12 +16,9 @@ class BuilderGeneratorTest extends TestCase
     public function generates_builder_when_using_the_default_converter(): void
     {
         $builderGenerator = new BuilderGenerator();
-        $builderAsString  = $builderGenerator->forClassWithConverter(
-            SampleClass::class,
-            new DefaultConverter()
-        );
+        $builderAsString = $builderGenerator->forClassWithConverter(SampleClass::class, new DefaultConverter());
 
-        $path = __DIR__.'/../Examples/Generator/SampleClassBuilder.php';
+        $path = __DIR__ . '/../Examples/Generator/SampleClassBuilder.php';
 
         self::assertStringEqualsFile($path, $builderAsString);
     }

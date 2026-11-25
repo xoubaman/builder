@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Xoubaman\Builder\Tests;
@@ -18,7 +19,7 @@ class CustomConstructorBuilderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withCustomConstructor    = new CustomConstructorFooBuilder();
+        $this->withCustomConstructor = new CustomConstructorFooBuilder();
         $this->withoutCustomConstructor = new FooBuilder();
     }
 
