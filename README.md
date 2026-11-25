@@ -1,3 +1,7 @@
+> [!WARNING]
+> **The 1.x version line is no longer maintained.** It receives no bug fixes or security updates.
+> Please upgrade to the latest version: see the [current documentation](https://github.com/xoubaman/builder#readme).
+
 # Builder
 
 A simple builder library intended to reduce headaches in your tests.
