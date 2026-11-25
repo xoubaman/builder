@@ -1,190 +1,258 @@
 # Builder
 
-A PHP library to simplify the implementation of builders.
+[![CI](https://github.com/xoubaman/builder/actions/workflows/ci.yml/badge.svg)](https://github.com/xoubaman/builder/actions/workflows/ci.yml)
+[![Latest version](https://img.shields.io/packagist/v/xoubaman/builder)](https://packagist.org/packages/xoubaman/builder)
+[![PHP version](https://img.shields.io/packagist/dependency-v/xoubaman/builder/php)](https://packagist.org/packages/xoubaman/builder)
+[![License](https://img.shields.io/packagist/l/xoubaman/builder)](LICENSE)
 
-The builder pattern is a design pattern where a class know how to build another one. Using builders provides a number of benefits:
+A small PHP library to write reusable builders with very little boilerplate, plus a CLI to generate them.
 
-* Adds semantics to object instantiation
-* Reduces the clutter when instantiating large objects
-* Reduces the number of places where a class is instantiated, reducing the number of places to change when refactoring the class constructor.
+Builders are classes that know how to create other objects. They are most useful in tests, where they:
 
-Here you have a [post](https://dev.to/xoubaman/about-mothers-builders-and-how-to-reduce-duplication-in-your-tests-25gg) outlining these benefits more in detail.
+* Give meaning to object creation: `$order = $builder->withExpiredDeadline()->build()`.
+* Hide the clutter of instantiating large objects, so tests show only the data that matters.
+* Keep constructor calls in a single place, so changing a constructor does not mean touching dozens of tests.
 
-# Installation
+There is a [post](https://dev.to/xoubaman/about-mothers-builders-and-how-to-reduce-duplication-in-your-tests-25gg) explaining these benefits in more detail.
 
-Require the dependency in your project using composer:
+## Installation
 
-    composer require --dev xoubaman/builder
-    
-Tests are the most common place for using builders. If you intend to use the library outside tests, do not include the `--dev` flag.
+```bash
+composer require --dev xoubaman/builder
+```
 
-## Using a builder
+Tests are the most common place for builders. If you use the library outside tests, drop the `--dev` flag.
 
-Builders define a "base" setup in the property `$base` that will be used as a starting point for each build. This initial setup can be modified to build customized instances.
+### Supported versions
 
-Once you have a builder prepared it will provide the following public methods:
+| Version | PHP      | Status                                       |
+|---------|----------|----------------------------------------------|
+| 3.x     | 8.3–8.5  | Maintained                                   |
+| 2.x     | ≥ 7.2    | Unmaintained, no bug fixes or security fixes |
+| 1.x     | ≥ 7.2    | Unmaintained, no bug fixes or security fixes |
 
-* `build()` will use the current data setup to do a build. Once called, the setup is wiped out and the next call will use the default values.
-* `cloneLast()` will return the same build as the last time `build()` was called. Handy to get multiple builds of the same setup.
-* `repeatLastSetup()` will change the current setup to the same as in the last build. Handy to avoid repeating large setups with small variations between them.
+Upgrading from 2.x? See the [changelog](CHANGELOG.md#300) for the breaking changes.
 
-## Creating builders with the CLI generator
+## Quick example
 
-Since builders boilerplate is a repetitive and non-sexy thing to write, a generator script is provided to automatically create builders for a provided class.
-
-The script requires the fully qualified name of the class as a parameter:
-
-    vendor/bin/builder build "Game\MetalSlugCharacter"
-
-Will create the `Game\MetalSlugCharacterBuilder`.
-
-It is possible to use a custom template for the builders instead of the one provided. For that a converter must be passed as a parameter:
-
-    vendor/bin/builder build "Game\MetalSlugCharacter" "Path\To\My\Converter"
-
-A converter is a class implementing the `Converter` interface. It will be invoked by the script passing `Xoubaman\Builder\Generator\ClassMetadata\ClassMetadata` as parameter.
-
-# Creating builders manually
-
-* Create a builder extending `Xoubaman\Builder\Builder`.
-* Declare any of the following constants to suit the builder needs:
-    * `CLASS_TO_BUILD`: the FQN of the class to instantiate. Omit or set to empty for the builder to return an array.
-    * `USE_CONSTRUCTOR`: the constructor method to call when instantiating the class. Omit or set to empty to use the regular constructor.
-    * `AFTER_BUILD_CALL`: a method to call in a new instance right after building it. It is an array where first element is the method name and the others will be used as parameters to the call.
-* Define the default values used for the build in the `$base` property as an array with the format `fieldName => value`. A good place for that may be the builder constructor. This property is an array that must have as many elements and in the same order as the constructor being used to instantiate the class.
-* Add methods to modify the build setup at your convenience.
-
-## Tips and tricks
-
-The following protected methods are available to create custom methods to modify the build setup:
-
-* `addToCurrent(string $field, $value)` will set the value of `$field` in the current data setup.
-* `removeFromCurrent(string $field)` will remove `$field` from the current data setup. Note this will probably cause errors when building class instances, because it will remove a parameter from the constructor call.
-* `currentSetup()` will return the whole current data setup, useful to apply more complex operations than adding or removing stuff.
-* `replaceCurrentSetup(array $newSetup)` will replace the whole current setup. 
-
-The magic method `__call` is implemented in a way that calling a `withParameter` method will attempt to replace they key `parameter` in the current setup. For instance, `withFooBar('baz')` will set the key `fooBar` in the current setup with the value `'baz'`.
-
-For better typing it is a good idea to override the `build` method in the child builder setting the return type to the class being instantiated.
-
-Any value in `$base` property (or the current setup) that is a callable will be called when building. For instance, with `$base['foo' => function() { return 'bar'; }]`, the value used for parameter foo will be `'bar'`. This is useful to yield different values on each build, like some autoincremental id.
-
-## Example
-The following is an example of a builder, quite similar to what the generator will create:
+Given a class:
 
 ```php
-//Class to build
-final class MetalSlugCharacter {
-    private string $name;
-    private Weapon $weapon;
-    private int $bombs;
-
-    public function __construct(string $name, Weapon $weapon, int $bombs) {...}
-    public static function create(): self {}
-    public function loadBombs(int $howMany): void {}
+final class MetalSlugCharacter
+{
+    public function __construct(
+        private string $name,
+        private Weapon $weapon,
+        private int $bombs,
+    ) {}
 }
 ```
 
-```php
-//The builder
-final class MetalSlugCharacterBuilder extends Builder {
-    //Class to instantiate, leave empty to return an array
-    protected const CLASS_TO_BUILD = MetalSlugCharacter::class;
-    //Constructor to use, leave empty to use the default __construct()
-    protected const USE_CONSTRUCTOR = 'create';
-    //Call this method after instantiation. First element is the method name, the other will be used as parameters to the call 
-    protected const AFTER_BUILD_CALL = ['loadBombs', 100];
+A builder declares which class it builds and the default values for its constructor:
 
-    public function __construct() {
-        //This data setup will be used by default
-        //It must hold enough parameters and in the same order as needed by the constructor being used
+```php
+use Xoubaman\Builder\Builder;
+
+final class MetalSlugCharacterBuilder extends Builder
+{
+    protected const CLASS_TO_BUILD = MetalSlugCharacter::class;
+
+    public function __construct()
+    {
+        // Default setup: same number and order as the constructor parameters
         $this->base = [
             'name'   => 'Marco Rossi',
             'weapon' => new RocketLauncher(),
-            'bombs'  => fn() => rand(10, 50), //Callables will be invoked to get the value
+            'bombs'  => 10,
         ];
     }
 
-    //Tip: override build() for type hinting
-    public function build(): MetalSlugCharacter {
+    // Override build() and cloneLast() only to narrow the return type
+    public function build(): MetalSlugCharacter
+    {
         return parent::build();
     }
 
-    //We declare methods to modify the build setup 
-    public function withName(string $name): self {
+    public function cloneLast(): MetalSlugCharacter
+    {
+        return parent::cloneLast();
+    }
+
+    public function withName(string $name): self
+    {
         return $this->addToCurrent('name', $name);
     }
 
-    public function withWeapon(Weapon $weapon): self {
+    public function withWeapon(Weapon $weapon): self
+    {
         return $this->addToCurrent('weapon', $weapon);
     }
-    
-    //Be creative with method names to express intention and improve readability
-    public function withoutWeapon(): self  {
-        return $this->addToCurrent('weapon', new BareHands);
+
+    // Name methods after what they mean in your domain
+    public function withoutWeapon(): self
+    {
+        return $this->addToCurrent('weapon', new BareHands());
     }
 }
 ```
 
-Now, in our tests:
+And in your tests:
 
 ```php
 $builder = new MetalSlugCharacterBuilder();
 
-//A new instance with default values
-$character = $builder->build(); //Returns the default Marco + Rocket Launcher
+$marco = $builder->build();                     // Marco with the rocket launcher
 
-//A new instance with a different setup
-$character = $builder
-                ->withName('Eri Kasamoto')
-                ->withWeapon(new HeavyMachineGun())
-                ->build();
+$eri = $builder
+    ->withName('Eri Kasamoto')
+    ->withWeapon(new HeavyMachineGun())
+    ->build();                                  // Eri with the heavy machine gun
 
-//A new instance with the same setup as the last one created
-$character = $builder->cloneLast(); //Returns Eri with the Heavy Machine Gun again
+$anotherEri = $builder->cloneLast();            // Same setup as the last build
 
-$character = $builder->repeatLastSetup() //Repeats the Eri + Heavy Machine Gun setup
-    ->withBombs(5) //Methods starting with "with" change the current setup using __call 
+$eriWithFewBombs = $builder
+    ->repeatLastSetup()                         // Start again from Eri's setup...
+    ->withBombs(5)                              // ...and change one field (see "Magic setters")
     ->build();
 ```
 
-## Adding more swag
+## Generating builders with the CLI
 
-For builder setups used over and over again, encapsulate that setup in a static
-factory method to remove duplication and improve readability. This is a design
-pattern called [Object Mother](https://www.martinfowler.com/bliki/ObjectMother.html):
+Builder boilerplate is repetitive, so the package ships a generator. Pass it the fully qualified class name:
+
+```bash
+vendor/bin/builder build "Game\MetalSlugCharacter"
+```
+
+It creates `MetalSlugCharacterBuilder.php` next to the original class, with a constant per field, a `$base` setup with placeholder values, typed `build()` and `cloneLast()` overrides and a `with*` method per constructor parameter. The command fails if the builder file already exists.
+
+To use your own template, pass a converter as the second argument:
+
+```bash
+vendor/bin/builder build "Game\MetalSlugCharacter" "App\Testing\MyConverter"
+```
+
+A converter implements `Xoubaman\Builder\Generator\Converter`. It receives a `Xoubaman\Builder\Generator\ClassMetadata\ClassMetadata` and returns the builder source code as a string.
+
+## Writing builders by hand
+
+Extend `Xoubaman\Builder\Builder` and configure it with these constants, all optional:
+
+| Constant           | Purpose                                                                                                               | Default                              |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------|--------------------------------------|
+| `CLASS_TO_BUILD`   | FQN of the class to instantiate.                                                                                      | `''`: `build()` returns an array     |
+| `USE_CONSTRUCTOR`  | Name of a static factory method to call instead of `new`.                                                             | `''`: uses `__construct()`           |
+| `AFTER_BUILD_CALL` | Method to call on the new instance right after building it. First element is the method name, the rest its arguments. | `[]`: nothing is called              |
+
+Then set the default values in `$base`, usually in the constructor, as `fieldName => value`. **Values are passed positionally**, so `$base` must have as many elements as the constructor (or factory method) needs, in the same order. Keys are only names you use to change the setup.
 
 ```php
-//Instead of doing all the time
-$character = $builder
-                ->withWeapon(new HeavyMachineGun())
-                ->withBombs(99)
-                ->build();
-
-//Encapsulate concrete setups in a static factory methods
-public static function fullyLoadedWithMachineGun(): MetalSlugCharacter
+final class MetalSlugCharacterBuilder extends Builder
 {
-    return (new self())
-                ->withWeapon(new HeavyMachineGun())
-                ->withBombs(99)
-                ->build();
+    protected const CLASS_TO_BUILD   = MetalSlugCharacter::class;
+    protected const USE_CONSTRUCTOR  = 'create';              // MetalSlugCharacter::create(...)
+    protected const AFTER_BUILD_CALL = ['loadBombs', 100];    // $character->loadBombs(100)
+
+    // ...
 }
-
-public static function emptyHanded(): MetalSlugCharacter
-{
-    return (new self())
-                ->withWeapon(new BareHands())
-                ->withBombs(0)
-                ->build();
-}
-
-
-//And start to use meaningful one liners that do not create distraction in the tests
-$character = MetalSlugCharacterBuilder::fullyLoadedWithMachineGun();
-$character = MetalSlugCharacterBuilder::emptyHanded();
 ```
-If your builder + mother became too cluttered consider separating them, using the builder internally inside the mother.
+
+### Public API
+
+* `build()` builds using the current setup. Afterwards the setup goes back to `$base`, so every build starts clean.
+* `cloneLast()` builds again with the setup of the last `build()` call.
+* `repeatLastSetup()` makes the setup of the last `build()` the current one, so you can tweak it before building again.
+
+### Protected helpers for custom methods
+
+* `addToCurrent(string $field, mixed $value)` sets one field in the current setup.
+* `removeFromCurrent(string $field)` removes a field. This is mostly useful for array builders: for objects it removes a constructor argument.
+* `currentSetup()` returns the whole current setup, for changes more complex than setting a field.
+* `replaceCurrentSetup(array $setup)` replaces the whole current setup.
+
+All of them except `currentSetup()` return the builder, so they can end a fluent method with `return $this->addToCurrent(...)`.
+
+### Magic setters
+
+Calling any undefined `withSomething($value)` method sets the `something` field of the current setup. It throws an `OutOfBoundsException` if the field does not exist. Add `@method` annotations to keep autocompletion and static analysis happy:
+
+```php
+/**
+ * @method self withBombs(int $bombs)
+ */
+final class MetalSlugCharacterBuilder extends Builder
+```
+
+### Lazy and generated values
+
+Any value in the setup that is a callable gets called at build time, and its result is used instead. This is handy for values that should differ on each build, like ids:
+
+```php
+$this->base = [
+    'id'    => static fn(): string => Uuid::v4()->toRaw(),
+    'name'  => 'Marco Rossi',
+];
+```
+
+> [!NOTE]
+> This uses `is_callable()`, so strings that happen to be function names (like `'date'` or `'max'`) and `[object, 'method']` arrays are called as well. To pass such a value literally, wrap it: `static fn() => 'date'`.
+
+### Array builders
+
+Leave `CLASS_TO_BUILD` empty and `build()` returns the setup as an array, keys included. This is useful for request payloads, rows or configuration:
+
+```php
+final class OrderPayloadBuilder extends Builder
+{
+    public function __construct()
+    {
+        $this->base = ['id' => 1, 'items' => [], 'coupon' => null];
+    }
+}
+```
+
+## Builders and Object Mothers
+
+For setups you use again and again, wrap them in named static factories. This is the [Object Mother](https://martinfowler.com/bliki/ObjectMother.html) pattern, and builders make it cheap:
+
+```php
+final class MetalSlugCharacterBuilder extends Builder
+{
+    // ...
+
+    public static function fullyLoaded(): MetalSlugCharacter
+    {
+        return (new self())
+            ->withWeapon(new HeavyMachineGun())
+            ->withBombs(99)
+            ->build();
+    }
+
+    public static function emptyHanded(): MetalSlugCharacter
+    {
+        return (new self())
+            ->withoutWeapon()
+            ->withBombs(0)
+            ->build();
+    }
+}
+
+// Tests now read like the scenario they describe
+$character = MetalSlugCharacterBuilder::fullyLoaded();
+```
+
+If a builder plus mother grows too large, split them into two classes, with the mother using the builder internally.
+
+## Contributing
+
+Issues and pull requests are welcome. Run the whole test and quality suite with:
+
+```bash
+composer all-checks
+```
+
+It runs the [Mago](https://mago.carthage.software/) linter and formatter check, then PHPUnit. `composer fix-style` formats the code.
 
 ## License
 
-This library is licensed under MIT License. More details in `LICENSE` file.
+MIT. See [LICENSE](LICENSE).
