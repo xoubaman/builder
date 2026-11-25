@@ -14,6 +14,7 @@ use Xoubaman\Builder\Command\FileAlreadyExists;
 use Xoubaman\Builder\Command\GenerateBuilderCommand;
 use Xoubaman\Builder\Generator\BuilderGenerator;
 use Xoubaman\Builder\Tests\Examples\Command\AlreadyHasOne;
+use Xoubaman\Builder\Tests\Examples\Command\ClassWithoutConstructor;
 use Xoubaman\Builder\Tests\Examples\Command\EmptyClass;
 
 class GenerateBuilderCommandTest extends TestCase
@@ -56,6 +57,17 @@ class GenerateBuilderCommandTest extends TestCase
         $this->commandTester->execute(['class' => EmptyClass::class]);
 
         $expectedBuilderPath = $this->buildPathToExampleFilesFor('EmptyClassBuilder.php');
+
+        self::assertNotEmpty($this->writer->contentWrittenInPath($expectedBuilderPath));
+        $this->commandTester->assertCommandIsSuccessful();
+    }
+
+    #[Test]
+    public function creates_a_builder_for_a_class_without_constructor(): void
+    {
+        $this->commandTester->execute(['class' => ClassWithoutConstructor::class]);
+
+        $expectedBuilderPath = $this->buildPathToExampleFilesFor('ClassWithoutConstructorBuilder.php');
 
         self::assertNotEmpty($this->writer->contentWrittenInPath($expectedBuilderPath));
         $this->commandTester->assertCommandIsSuccessful();
