@@ -52,7 +52,7 @@ class GenerateBuilderCommand extends Command
         $this->writer->writeIn($destinationPath, $builderContent);
         $output->writeln(sprintf("Builder class created in '%s'", $destinationPath));
 
-        return 1;
+        return Command::SUCCESS;
     }
 
     private function getClassFromInput(InputInterface $input): string

@@ -58,6 +58,7 @@ class GenerateBuilderCommandTest extends TestCase
         $expectedBuilderPath = $this->buildPathToExampleFilesFor('EmptyClassBuilder.php');
 
         self::assertNotEmpty($this->writer->contentWrittenInPath($expectedBuilderPath));
+        $this->commandTester->assertCommandIsSuccessful();
     }
 
     #[Test]
