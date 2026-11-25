@@ -1,3 +1,7 @@
+> [!WARNING]
+> **The 2.x version line is no longer maintained.** It receives no bug fixes or security updates.
+> Please upgrade to the latest version: see the [current documentation](https://github.com/xoubaman/builder#readme).
+
 # Builder
 
 A PHP library to simplify the implementation of builders.
