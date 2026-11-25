@@ -1,17 +1,26 @@
 {
     "name": "xoubaman/builder",
-    "description": "A library for reusable builders",
+    "description": "Reusable builders for PHP objects and arrays, with a generator CLI",
     "type": "library",
     "keywords": [
-        "testing"
+        "testing",
+        "builder",
+        "test-data",
+        "fixtures",
+        "object-mother"
     ],
     "license": "MIT",
+    "homepage": "https://github.com/xoubaman/builder",
     "authors": [
         {
             "name": "Carlos Gándara",
             "email": "xoubaman@hey.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/xoubaman/builder/issues",
+        "source": "https://github.com/xoubaman/builder"
+    },
     "require": {
         "php": "^8.3",
         "ext-mbstring": "*",
@@ -47,5 +56,10 @@
     },
     "bin": [
         "bin/builder"
-    ]
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.x-dev"
+        }
+    }
 }
